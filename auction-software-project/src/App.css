@@ -5,23 +5,23 @@ body{
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
-  color: #eaecef;
+  color: black;
 }
 
 header{
   padding: 30px;
-  background: #011627;
+  background: #f44336;
   height: 40px;
 }
 
 .sidenav{
   width: 240px;
-  background: #011627;
+  background: #f44336;
   position: absolute;
   height: 95vh;
   padding: 0 30px;
   left: -100%;
-  transition: all 1s;
+  transition: all .3s;
 }
 
 .sidenav.active{
@@ -54,4 +54,13 @@ ul li a.active{
 
 header{
   font-size: 40px;
+}
+
+.main {
+  height:90vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:40px;
+  color:#c9c9c9;
 }

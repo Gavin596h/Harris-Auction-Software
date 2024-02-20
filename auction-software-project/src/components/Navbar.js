@@ -1,15 +1,19 @@
+import NewAuction from '../pages/NewAuction';
+import Home from '../pages/Home';
+import { NavLink } from 'react-router-dom';
+
 const Navbar = ({show}) => {
     return (
         <div className={show ? 'sidenav active' : 'sidenav'}>
             <ul>
                 <li>
-                    <a href='/'>Home</a>
+                    <NavLink to="/">Home</NavLink>
                 </li>
                 <li>
-                    <a href='/'>New Auction</a>
+                    <NavLink to="/new-auction">New Auction</NavLink>
                 </li>
                 <li>
-                    <a href='/'>Reports</a>
+                    <NavLink to="/">Reports</NavLink>
                 </li>
             </ul>
         </div>
