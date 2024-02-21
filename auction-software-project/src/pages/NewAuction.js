@@ -18,6 +18,7 @@ function NewAuction() {
                 </select>
                 <label for="NumOfDecPlaces">No. of U/M Decimal Places</label>
                 <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces"></input><br/>
+                <label for="CollectiveUnitOfMeasurement">Collective U/M</label>
                 <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" size="2">
                     <option value="Tract">Tract</option>
                     <option value="placeholder">placeholder</option>
@@ -26,6 +27,7 @@ function NewAuction() {
             </fieldset><br/>
             <fieldset>
                 <legend>Settings</legend>
+                <label for="BidMethod">Bid Method</label>
                 <select id="BidMethod" name="BidMethod" size="2">
                     <option value="InTotal">In Total</option>
                     <option value="placeholder">placeholder</option>
