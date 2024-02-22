@@ -1,6 +1,6 @@
 function NewAuction() {
     return <>
-        <form>
+        <form method="post" action="/server.js">
             <fieldset>
                 <legend>Description</legend><br/>
                 <label for="AuctionName">Auction Name</label>

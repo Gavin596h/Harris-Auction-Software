@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const AuctionSchema = new mongoose.Schema({
   AuctionName: String,
-  AuctionDate: Date,
+  /*AuctionDate: Date,
   AuctionNumber: Number,
   TractAmount: Number,
   UnitofMeasure: String,
@@ -19,7 +19,7 @@ const AuctionSchema = new mongoose.Schema({
   BuyersPremiumAmount: Number,
   DepositType: String,
   DepositAmount: Number,
-  completed: Boolean
+  completed: Boolean*/
 });
 
 const Auction = mongoose.model('Auction', AuctionSchema);
