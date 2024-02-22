@@ -1,6 +1,29 @@
 function NewAuction() {
+    const handleSubmit = async (event) => {
+        console.log(event.target); // Debugging line
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const formProps = Object.fromEntries(formData);
+        try {
+          const response = await fetch('http://localhost:3001/AuctionCRUD', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formProps),
+          });
+          if (response.ok) {
+            console.log('Auction submitted successfully');
+          } else {
+            console.error('Submission failed');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+
     return <>
-        <form method="post" action="/server.js">
+        <form onSubmit={handleSubmit}>
             <fieldset>
                 <legend>Description</legend><br/>
                 <label for="AuctionName">Auction Name</label>
@@ -23,7 +46,7 @@ function NewAuction() {
                     <option value="Tract">Tract</option>
                     <option value="placeholder">placeholder</option>
                 </select>
-                <input type="button" id="TractSetup" name="TractSetup" value="Tract Setup"></input><br/>
+                <input type="submit" id="TractSetup" name="TractSetup" value="Tract Setup"></input><br/>
             </fieldset><br/>
             <fieldset>
                 <legend>Settings</legend>
