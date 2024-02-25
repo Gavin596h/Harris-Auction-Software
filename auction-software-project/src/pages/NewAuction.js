@@ -129,32 +129,38 @@ function NewAuction() {
         <div class="flex flex-wrap -mx-3">
         <legend>Terms</legend>
 
-            <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
+            <div class="flex w-1/2 px-3 mb-6 md:mb-0">
               <div class="w-3/6">
                 <label class="block tracking-wide mb-2"  for="TractQuantity">Deposit</label>
                 <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
               </div>
               <div class="w-3/6 ml-5">
                   <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >Units</label>
-                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block py-3 px-4 mb-3 leading-tight">
+                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block py-3 px-4 mb-3 leading-tight bg-gray-200 rounded">
                           <option value="Percent">Amount</option>
                           <option value="Percent">Percent</option>
                           <option value="None">None</option>
 
                       </select>
                   </div>
+                <div class=" md:w-1/2 px-3 mb-6 md:mb-0">
+                  <label class="block tracking-wide mb-2" for="Buyer">Buyer's Premium</label>
+                  <input type="number" id="Buyer" name="Buyer" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+                </div>
             </div>
 
           </div>
 
 
-            <fieldset>
-                <legend>System</legend>
-                <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate"></input>
-                <input type="button" id="EventLog" name="EventLog" value="Event Log"></input><br/>
-                <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults"></input>
-                <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title"></input><br/>
-            </fieldset><br/>
+
+
+          <legend>Settings</legend>
+          <div class="flex flex-wrap -mx-3">
+            <div><input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded"></input></div>
+            <div><input type="button" id="EventLog" name="EventLog" value="Event Log" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded"></input></div>
+            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded"></input>
+            <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded"></input><br/>
+          </div>
 
             <fieldset>
                 <legend>Find Auction</legend>
