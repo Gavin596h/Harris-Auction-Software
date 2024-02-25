@@ -30,108 +30,123 @@ function NewAuction() {
       };
 
     return <>
+      <div class="w-full flex justify-center mt-10">
         <form onSubmit={handleSubmit}>
-          <div className='container'>
-              <Container>
-              <legend>Description</legend>
-                <Row>
-                  <Col>
-                    <label for="AuctionName">Auction Name</label>
-                    <input type="text" id="AuctionName" name="AuctionName" class='ml-3' ></input>
-                  </Col>
-                  <Col>    
-                    <label for="AuctionNumber" class='ml-3'>Auction #</label>
-                    <input type="number" id="AuctionNumber" name="AuctionNumber" class='ml-3'></input><br/>
-                  </Col>
-                  <Col>
-                    <label for="ActionDate" >Auction Date</label>
-                    <input type="date" id="AuctionDate" name="AuctionDate" class='ml-3'></input>
-                  </Col>           
-                </Row>
-                <br />
-                <Row>
-                <Col>
-                  <label for="TractQuantity">Tract Quantity</label>
-                  <input type="number" id="TractQuantity" name="TractQuantity"  class='ml-3'></input><br/>
-                  
-                  <label for="UnitOfMeasurement">Unit of Measure (U/M)</label>
-                  <select id="UnitOfMeasurement" name="UnitOfMeasurement">
-                      <option value="Acre">Acre</option>
+{/* Description */}
+          <legend>Description</legend>
+
+          <div class="flex flex-wrap -mx-3">
+            <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionName">Auction Name</label>
+              <input type="text" id="AuctionName" name="AuctionName"class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+            </div>
+
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionName">Date</label>
+              <input type="date" id="AuctionDate" name="AuctionDate" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+            </div>
+            
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionName">Auction #</label>
+              <input type="number" id="AuctionNumber" name="AuctionNumber" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+            </div>
+            
+            <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
+              <div class="w-3/6">
+                <label class="block tracking-wide mb-2"  for="TractQuantity">Tract</label>
+                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+              </div>
+              <div class="w-3/6 ml-5">
+                  <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
+                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block py-3 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                          <option value="Acre">Acre</option>
+                          <option value="placeholder">placeholder</option>
+                      </select>
+                  </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+                <label class="block tracking-wide mb-2" for="NumOfDecPlaces">U/M Decimal Places</label>
+                <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces"  class="block w-full py-3 px-4 mb-3 leading-tight bg-gray-200" ></input>
+            </div>
+              <div class="w-2/12">
+                <label for="CollectiveUnitOfMeasurement" class="block tracking-wide mb-2 ml-5" >Collective U/M</label>
+                    <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" class="rounded block w-full py-3 px-4 mb-3 leading-tight ml-5 bg-gray-200">
+                      <option value="Tract">Tract</option>
+                      <option value="placeholder">placeholder</option>
+                    </select>
+                </div>
+          </div>
+              <div class="w-full md:w-1/4 md:mb-0">
+                <button type="submit" id="TractSetup" name="TractSetup" class="bg-red-500 py-2 px-4 rounded" >Tract Setup</button>
+              </div>
+{/* End of Description */}
+<br/>
+{/*Settings */}
+          <legend>Settings</legend>
+          <div class="flex flex-wrap -mx-3">
+            <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+                <label for="BidMethod"  class="block tracking-wide mb-2 ">Bid Method</label>
+                  <select id="BidMethod" name="BidMethod" class="block w-full py-3 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                      <option value="InTotal">In Total</option>
                       <option value="placeholder">placeholder</option>
                   </select>
-                  </Col>
-                  <Col>
-                    <label for="NumOfDecPlaces">No. of U/M Decimal Places</label>
-                    <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces"  class='ml-3'></input><br/>
-                    <label for="CollectiveUnitOfMeasurement">Collective U/M</label>
-                    <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement">
-                        <option value="Tract">Tract</option>
-                        <option value="placeholder">placeholder</option>
-                    </select>
-                  </Col>
-                  <Col>
-                    <input type="submit" id="TractSetup" name="TractSetup" value="Tract Setup"></input><br/>
-                  </Col>
-                </Row>
-              </Container>
+            </div>
 
-            <br/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <fieldset>
-                <legend>Settings</legend>
-                <label for="BidMethod">Bid Method</label>
-                <select id="BidMethod" name="BidMethod">
-                    <option value="InTotal">In Total</option>
-                    <option value="placeholder">placeholder</option>
-                </select>
-                <input type="checkbox" id="PrintOrNot" name="PrintOrNot"></input>
-                <label for="PrintOrNot">Print the bid board after each bid</label><br/>
-                <label for="NumberOfLeaderBoards">No. of leader boards to track</label>
-                <input type="number" id="NumberOfLeaderBoards" name="NumberOfLeaderBoards"></input>
-                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination"></input>
-                <label for="WarnOnCombination">Warn on new combination</label><br/>
-                <label for="HighColumn">"High" column description</label>
-                <select id="HighColumn" name="HighColumn">
+            <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                <label for="HighColumn" class="block tracking-wide mb-2">"High" column description</label>
+                  <select id="HighColumn" name="HighColumn" class="block w-full py-3 px-4 mb-3 leading-tight bg-gray-200 rounded">
                     <option value="High">High</option>
                     <option value="placeholder">placeholder</option>
-                </select>
-                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination"></input>
-                <label for="BidQueryCombination">Bid query combination</label><br/>
-                <input type="button" id="SetAsDefault" name="SetAsDefault" value="Set as default"></input><br/>
-            </fieldset><br/>
+                  </select>
+            </div>
 
-            <fieldset>
-                <legend>Terms</legend>
-                <input type="checkbox" id="BuyersPrem" name="BuyersPrem"></input>
-                <label for="BuyersPrem">Buyer's premium</label>
-                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent"></input>
-                <label for="BuyersPremPercent">%</label><br/>
-                <input type="radio" id="None" name="group1" value="None" />
-                <label for="None">None</label><br/>
-                <label for="Percent">Deposit: </label>
-                <input type="radio" id="Percent" name="group1" value="Percent" />
-                <label for="Percent">Percent</label>
-                <input type="number" id="PercentOrAmount" name="PercentOrAmount"></input><br/>
-                <input type="radio" id="Amount" name="group1" value="Amount" />
-                <label for="Amount">Amount</label><br/>
-            </fieldset><br/>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class=""  for="WarnOnCombination">Warn on new combination</label>
+                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination" class=" w-full py-3 px-4 mb-3 leading-tight" ></input>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-6">
+
+              <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label  class="mb-2" for="BidQueryCombination">Bid query combination</label>
+                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class="w-full py-3 px-4 mb-3 leading-tight" ></input>
+              </div>
+
+              
+
+              <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <button type="button" id="SetAsDefault" name="SetAsDefault">Set As Default</button>
+              </div>
+              </div>
+            </div>
+{/* End of Settings */}
+
+
+{/* Terms */}
+        <div class="flex flex-wrap -mx-3">
+        <legend>Terms</legend>
+
+            <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
+              <div class="w-3/6">
+                <label class="block tracking-wide mb-2"  for="TractQuantity">Deposit</label>
+                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-3 px-4 mb-3 leading-tight" ></input>
+              </div>
+              <div class="w-3/6 ml-5">
+                  <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >Units</label>
+                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block py-3 px-4 mb-3 leading-tight">
+                          <option value="Percent">Amount</option>
+                          <option value="Percent">Percent</option>
+                          <option value="None">None</option>
+
+                      </select>
+                  </div>
+            </div>
+
+          </div>
+
 
             <fieldset>
                 <legend>System</legend>
@@ -155,8 +170,8 @@ function NewAuction() {
                 <input type="radio" id="AuctionDateSearch" name="group2" value="Auction Date" />
                 <label for="AuctionDateSearch">Auction Date</label>
             </fieldset>
-            </div>
         </form>
+        </div>
     </>
 }
 
