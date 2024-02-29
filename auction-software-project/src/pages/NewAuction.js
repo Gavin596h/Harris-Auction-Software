@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 function NewAuction() {
     const handleSubmit = async (event) => {
         console.log(event.target); // Debugging line
@@ -16,14 +17,148 @@ function NewAuction() {
             console.log('Auction submitted successfully');
           } else {
             console.error('Submission failed');
+=======
+import { useState,useEffect,useRef} from "react";
+import {useNavigate} from 'react-router';
+
+function NewAuction() {
+  //Handles submission for new auctions
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    // Handle boolean values explicitly
+    formData.set('PrintOrNot', formData.has('PrintOrNot'));
+    formData.set('WarnOnCombination', formData.has('WarnOnCombination'));
+    formData.set('BidQueryCombination', formData.has('BidQueryCombination'));
+    formData.set('BuyersPrem', formData.has('BuyersPrem'));
+
+    // Handle DepositType based on radio button selection
+    const depositType = formData.get('group1'); // 'None', 'Percent', or 'Amount'
+    formData.delete('group1'); // Remove it from formData since 'group1' is not part of the schema
+    if (depositType !== 'None') {
+      formData.set('DepositType', depositType);
+    } else {
+      formData.set('DepositType', '');
+      formData.set('PercentOrAmount', 0); // Reset this value if 'None' is selected
+    }
+
+  const formProps = Object.fromEntries(formData);
+
+    try {
+      const response = await fetch('http://localhost:3001/AuctionCRUD', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formProps),
+      });
+      if (response.ok) {
+        console.log('Auction submitted successfully');
+      } else {
+        console.error('Submission failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  //Fetches past auctions
+  const [pastAuctions, setPastAuctions] = useState([]);
+
+    useEffect(() => {
+      const fetchPastAuctions = async () => {
+          try {
+              const response = await fetch('http://localhost:3001/pastAuctions');
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              const auctions = await response.json();
+              setPastAuctions(auctions);
+          } catch (error) {
+              console.error('Failed to fetch past auctions:', error);
+>>>>>>> Stashed changes
           }
         } catch (error) {
           console.error('Error:', error);
         }
       };
 
+<<<<<<< Updated upstream
+=======
+      fetchPastAuctions();
+    }, []);
+
+    //References for HTML
+    const auctionNameRef = useRef();
+    const auctionNumberRef = useRef();
+    const auctionDateRef = useRef();
+    const tractQuantityRef = useRef();
+    const unitOfMeasurementRef = useRef();
+    const numOfDecPlacesRef = useRef();
+    const collectiveUnitOfMeasurementRef = useRef();
+    const bidMethodRef = useRef();
+    const numberOfLeaderBoardsRef = useRef();
+    const highColumnRef = useRef();
+    const printOrNotRef = useRef();
+    const warnOnCombinationRef = useRef();
+    const bidQueryCombinationRef = useRef();
+    const buyersPremRef = useRef();
+    const buyersPremPercentRef = useRef();
+    const depositTypeRef = useRef();
+    const percentOrAmountRef = useRef();
+    const depositTypeNoneRef = useRef();
+    const depositTypePercentRef = useRef();
+    const depositTypeAmountRef = useRef();
+    
+    const navigate = useNavigate();
+
+    //Stores past auctions to be put back into input fields
+    const handlePastAuctionSelect = async (event) => {
+      const auctionId = event.target.value;
+      const selectedAuction = pastAuctions.find(auction => auction._id === auctionId);
+      if (selectedAuction) {
+          auctionNameRef.current.value = selectedAuction.AuctionName || '';
+          auctionNumberRef.current.value = selectedAuction.AuctionNumber || '';
+          auctionDateRef.current.value = selectedAuction.AuctionDate ? selectedAuction.AuctionDate.split('T')[0] : ''; // Assuming AuctionDate is in ISO format
+          tractQuantityRef.current.value = selectedAuction.TractQuantity || '';
+          unitOfMeasurementRef.current.value = selectedAuction.UnitOfMeasurement || '';
+          numOfDecPlacesRef.current.value = selectedAuction.NumOfDecPlaces || '';
+          collectiveUnitOfMeasurementRef.current.value = selectedAuction.CollectiveUnitOfMeasurement || '';
+          bidMethodRef.current.value = selectedAuction.BidMethod || '';
+          numberOfLeaderBoardsRef.current.value = selectedAuction.NumberOfLeaderBoards || '';
+          highColumnRef.current.value = selectedAuction.HighColumn || '';
+          printOrNotRef.current.checked = selectedAuction.PrintOrNot || false;
+          warnOnCombinationRef.current.checked = selectedAuction.WarnOnCombination || false;
+          bidQueryCombinationRef.current.checked = selectedAuction.BidQueryCombination || false;
+          buyersPremRef.current.checked = selectedAuction.BuyersPrem || false;
+          buyersPremPercentRef.current.value = selectedAuction.BuyersPremPercent || '';
+
+          depositTypeNoneRef.current.checked = false;
+          depositTypePercentRef.current.checked = false;
+          depositTypeAmountRef.current.checked = false;
+  
+          // For DepositType, you might need a more complex handling depending on how it's structured
+          // This is a simple example assuming you have refs for radio buttons
+          if (selectedAuction.DepositType === 'None') {
+              depositTypeNoneRef.current.checked = true;
+          } else if (selectedAuction.DepositType === 'Percent') {
+              depositTypePercentRef.current.checked = true;
+          } else if (selectedAuction.DepositType === 'Amount') {
+              depositTypeAmountRef.current.checked = true;
+          }
+          percentOrAmountRef.current.value = selectedAuction.PercentOrAmount || '';
+      }
+  };
+
+  //Form outline and page navigation when auction is created
+>>>>>>> Stashed changes
     return <>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(event) => {
+          event.preventDefault();
+          handleSubmit(event);
+          navigate("/successfully-submitted");
+        }}>
             <fieldset>
                 <legend>Description</legend><br/>
                 <label for="AuctionName">Auction Name</label>

@@ -1,6 +1,7 @@
 const { Int32 } = require('mongodb');
 const mongoose = require('mongoose');
 
+//Schema for auction info
 const AuctionSchema = new mongoose.Schema({
   AuctionName: String,
   /*AuctionDate: Date,
