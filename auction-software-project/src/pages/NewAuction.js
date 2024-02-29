@@ -1,23 +1,4 @@
-<<<<<<< Updated upstream
-function NewAuction() {
-    const handleSubmit = async (event) => {
-        console.log(event.target); // Debugging line
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const formProps = Object.fromEntries(formData);
-        try {
-          const response = await fetch('http://localhost:3001/AuctionCRUD', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formProps),
-          });
-          if (response.ok) {
-            console.log('Auction submitted successfully');
-          } else {
-            console.error('Submission failed');
-=======
+
 import { useState,useEffect,useRef} from "react";
 import {useNavigate} from 'react-router';
 
@@ -77,15 +58,8 @@ function NewAuction() {
               setPastAuctions(auctions);
           } catch (error) {
               console.error('Failed to fetch past auctions:', error);
->>>>>>> Stashed changes
           }
-        } catch (error) {
-          console.error('Error:', error);
-        }
       };
-
-<<<<<<< Updated upstream
-=======
       fetchPastAuctions();
     }, []);
 
@@ -152,7 +126,6 @@ function NewAuction() {
   };
 
   //Form outline and page navigation when auction is created
->>>>>>> Stashed changes
     return <>
         <form onSubmit={(event) => {
           event.preventDefault();
