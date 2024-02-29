@@ -3,23 +3,23 @@ const mongoose = require('mongoose');
 
 const AuctionSchema = new mongoose.Schema({
   AuctionName: String,
-  /*AuctionDate: Date,
+  AuctionDate: Date,
   AuctionNumber: Number,
-  TractAmount: Number,
-  UnitofMeasure: String,
-  NumofDecPlace: Number,
-  ColofMeasure: String,
+  TractQuantity: Number,
+  UnitOfMeasurement: String,
+  NumOfDecPlaces: Number,
+  CollectiveUnitOfMeasurement: String,
   BidMethod: String,
-  NumofLeadBoard: Number,
-  HighColDesc: String,
-  PrintAfterBid: Boolean,
-  WarnOnNewComb: Boolean,
-  BidQueryCon: Boolean,
-  BuyersPremium: Boolean,
-  BuyersPremiumAmount: Number,
+  NumberOfLeaderBoards: Number,
+  HighColumn: String,
+  PrintOrNot: Boolean,
+  WarnOnCombination: Boolean,
+  BidQueryCombination: Boolean,
+  BuyersPrem: Boolean,
+  BuyersPremPercent: Number,
   DepositType: String,
-  DepositAmount: Number,
-  completed: Boolean*/
+  PercentOrAmount: Number,
+  completed: Boolean
 });
 
 const Auction = mongoose.model('Auction', AuctionSchema);

@@ -1,26 +1,43 @@
 function NewAuction() {
-    const handleSubmit = async (event) => {
-        console.log(event.target); // Debugging line
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const formProps = Object.fromEntries(formData);
-        try {
-          const response = await fetch('http://localhost:3001/AuctionCRUD', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formProps),
-          });
-          if (response.ok) {
-            console.log('Auction submitted successfully');
-          } else {
-            console.error('Submission failed');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    // Handle boolean values explicitly
+    formData.set('PrintOrNot', formData.has('PrintOrNot'));
+    formData.set('WarnOnCombination', formData.has('WarnOnCombination'));
+    formData.set('BidQueryCombination', formData.has('BidQueryCombination'));
+    formData.set('BuyersPrem', formData.has('BuyersPrem'));
+
+    // Handle DepositType based on radio button selection
+    const depositType = formData.get('group1'); // 'None', 'Percent', or 'Amount'
+    formData.delete('group1'); // Remove it from formData since 'group1' is not part of the schema
+    if (depositType !== 'None') {
+      formData.set('DepositType', depositType);
+    } else {
+      formData.set('DepositType', '');
+      formData.set('PercentOrAmount', 0); // Reset this value if 'None' is selected
+    }
+
+    const formProps = Object.fromEntries(formData);
+
+    try {
+      const response = await fetch('http://localhost:3001/AuctionCRUD', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formProps),
+      });
+      if (response.ok) {
+        console.log('Auction submitted successfully');
+      } else {
+        console.error('Submission failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
     return <>
         <form onSubmit={handleSubmit}>
