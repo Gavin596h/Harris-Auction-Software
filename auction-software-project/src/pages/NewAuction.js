@@ -30,46 +30,8 @@ function NewAuction() {
       };
 
     return <>
-    <body className='font-sans'>
-    <aside className='fixed top-0 left-0 z-40 w-64 h-screen'>
-      <div className='h-full overflow-y-auto py-5 px-3 bg-gray-50 dark:bg-red-700'>
-        <ul className='space-y-2'>
-          <li>
-            <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-            <span class="ml-3">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-            <span class="ml-3">History</span>
-            </a>
-          </li>
-          <li>
-            <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-            <span class="ml-3">Reports</span>
-            </a>
-          </li>
-          <li>
-            <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-            <span class="ml-3">Calandar</span>
-            </a>
-          </li>
-        </ul>
-        <ul class="pt-5 mt-5 space-y-2 border-t dark:border-white-500">
-            <li>
-                <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-                <span class="ml-3">Settings</span>
-                </a>
-            </li>
-            <li>
-                <a href="/#" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-                <span class="ml-3">Help</span>
-                </a>
-            </li>
-        </ul>
-      </div>
-    </aside>
- 
+
+ <body>
     <div class="w-full flex justify-center mt-10">
         <form onSubmit={handleSubmit}>
 {/* Description */}

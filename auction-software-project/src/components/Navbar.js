@@ -7,18 +7,17 @@ import { IoMdHome } from "react-icons/io";
 
 const Navbar = ({show}) => {
     return (
-        <div className={show ? 'sidenav active' : 'sidenav'}>
         <aside className='fixed top-0 left-0 z-40 w-64 h-screen'>
             <div className='h-full overflow-y-auto py-5 px-3 bg-gray-50 dark:bg-red-700'>         
             <ul className='space-y-2'>
                     <li>
-                        <NavLink to="/" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'><TbReportAnalytics />
-                            <span class="ml-3">Dashboard</span> 
+                        <NavLink to="/bid-board" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'><TbReportAnalytics />
+                            <span class="ml-3">Board</span> 
                          </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'><TbReportAnalytics /> 
-                            <span class="ml-3">History</span> 
+                        <NavLink to="/new-auction" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'><TbReportAnalytics /> 
+                            <span class="ml-3">New Acution</span> 
                         </NavLink>
                     </li>
                     <li>
@@ -46,7 +45,6 @@ const Navbar = ({show}) => {
                     </ul>
             </div>
         </aside>
-        </div>
 
     )
 }
