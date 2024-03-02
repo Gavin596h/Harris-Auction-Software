@@ -3,9 +3,9 @@ import React from 'react';
 function BidBoard() {
 
   return (
-    <div className="w-full">
-        <div className="w-full flex justify-center p-4 sm:ml-64 bg-black ">
-            <table className="text-sm text-gray-500 dark:text-white table-auto">
+    <div>
+        <div className="relative overflow-x-auto mr-64">
+            <table className="w-full -mr-64 ml-64 fixed text-sm text-gray-500 dark:text-white table-auto">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
                         <th scope="col" className="px-6 py-3">

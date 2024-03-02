@@ -1,6 +1,3 @@
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import '../style/NewAuction.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -39,7 +36,7 @@ function NewAuction() {
 
           <div class="flex flex-wrap -mx-3">
             <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-              <label class="block tracking-wide mb-2 font-bold uppercase" for="AuctionName">Auction Name</label>
+              <label class="block tracking-wide mb-2" for="AuctionName">Auction Name</label>
               <input type="text" id="AuctionName" name="AuctionName"class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ></input>
             </div>
 
@@ -152,10 +149,10 @@ function NewAuction() {
 {/* Settings */}
           <legend>Settings</legend>
           <div class="flex flex-wrap mb-6 md:mb-0 text-white">
-            <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-            <input type="button" id="EventLog" name="EventLog" value="Event Log" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-            <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-3 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input><br/>
+            <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="EventLog" name="EventLog" value="Event Log" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input><br/>
           </div>
 
 {/* Find Auction */}
