@@ -21,6 +21,8 @@ function App() {
         <Routes>
           <Route path="/bid-board" exact={true} element={<BidBoard/>}/>
           <Route path="/new-auction" exact={true} element={<NewAuction/>}/>
+          <Route path="/home" exact={true} element={<Home/>}/>
+
         </Routes>
       </Router>
     </div>

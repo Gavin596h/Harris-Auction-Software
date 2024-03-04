@@ -29,7 +29,7 @@ function NewAuction() {
     return <>
 
  <body>
-    <div class="w-full flex justify-center mt-10">
+    <div class="font-fira w-full flex justify-center mt-10">
         <form onSubmit={handleSubmit}>
 {/* Description */}
           <legend>Description</legend>
@@ -82,7 +82,7 @@ function NewAuction() {
                 <button type="submit" id="TractSetup" name="TractSetup" class="bg-red-500 py-2 px-4 rounded text-white" >Tract Setup</button>
               </div>
 {/* End of Description */}
-<br/>
+<hr/>
 {/*Settings */}
           <legend>Settings</legend>
           <div class="flex flex-wrap -mx-3">
@@ -121,7 +121,7 @@ function NewAuction() {
               </div>
 {/* End of Settings */}
 
-<br/>
+<hr/>
 {/* Terms */}
         <legend>Terms</legend>
         <div class="flex flex-wrap -mx-3">
@@ -145,6 +145,7 @@ function NewAuction() {
                   </div>
             </div>
           </div>
+          <hr/>
 
 {/* Settings */}
           <legend>Settings</legend>
@@ -154,6 +155,7 @@ function NewAuction() {
             <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
             <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input><br/>
           </div>
+          <hr/>
 
 {/* Find Auction */}
 
@@ -166,32 +168,25 @@ function NewAuction() {
                     </select>
                   </div>
 
-
-                  <div class="flex items-center mb-4">
-                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600" ></input>
-                <label  class="ms-2" for="BidQueryCombination">Print the bid board after each bid</label>
-            </div>
-
-
-
-
-
-                <input type="button" id="BidBoards" name="BidBoards" value="Bid Boards"></input>
-                <input type="button" id="ReportsOrFile" name="ReportsOrFile" value="Reports / File"></input><br/>
-
-                <label className="block">Sort By </label>
-                <div className="flex">
-                    <div className="border rounded py-2 w-1/6 ps-5 mr-5">
-                        <input type="radio" id="AuctionNameSearch" name="group2" value="Auction Name" className="ps-5"/>
-                        <label for="AuctionNameSearch" className="py-2 px-2">Auction Name</label>
-                    </div>
-                    <div className="border rounded py-2 w-1/6 ps-5">
-                        <input type="radio" id="AuctionDateSearch" name="group2" value="Auction Date" className=""/>
-                        <label for="AuctionDateSearch" className="py-2 px-2">Auction Date</label>
-                    </div>
-                </div>
+                  
+              <div class="w-full md:w-1/4 mb-6 md:mb-0">
+                  <label for="Sort" class="block tracking-wide mb-2">Sort By</label>
+                    <select id="Sort" name="Sort" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                      <option value="Date">Date</option>
+                      <option value="Name">Name</option>
+                    </select>
+              </div>
+              <div class="flex flex-wrap mb-6 md:mb-0 text-white">
+                <input type="button" id="BidBoards" name="BidBoards" value="Bid Boards" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
+                <input type="button" id="ReportsOrFile" name="ReportsOrFile" value="Reports / File" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+              </div>
             </fieldset>
-        </form>
+            <hr/>
+            <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
+                <input type="button" id="Create" name="Create" value="Start Auction" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
+                <input type="button" id="Save" name="Save" value="Save" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+              </div>        
+            </form>
         </div>
     </body>
     </>

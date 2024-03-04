@@ -9,24 +9,24 @@ import { IoIosSettings } from "react-icons/io";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 
 
-const Navbar = ({show}) => {
+const Navbar = () => {
     return (
-        <aside className='fixed top-0 left-0 z-40 w-64 h-screen'>
+        <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
             <div className='h-full overflow-y-auto py-5 px-3 bg-gray-50 dark:bg-red-700'>         
-            <ul className='space-y-2'>
+            <ul className="pl-0 space-y-1">
                     <li>
-                        <NavLink to="/bid-board" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
+                        <NavLink to="/bid-board" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'>
                             <MdOutlineDashboard />
                             <span class="ml-3">Board</span> 
                          </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/new-auction" onClick={() => show(!show)} className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'><RiAuctionFill /> 
+                        <NavLink to="/new-auction" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'><RiAuctionFill /> 
                             <span class="ml-3">New Acution</span> 
                         </NavLink>
                     </li>
                     <li>
-                        <a href="/#" className=' no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
+                        <a href="/home" className=' no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
                         <TbReportAnalytics/>
                         <span class="ml-3">Reports</span>
                         </a>
@@ -38,7 +38,8 @@ const Navbar = ({show}) => {
                         </a>
                     </li>
                     </ul>
-                    <ul class="pt-5 mt-5 space-y-2 border-t dark:border-white-500">
+                    <hr class="w-48 h-0.5 mx-auto my-4 bg-white border-0 rounded md:my-10"/>
+                    <ul className="pl-0 space-y-1">
                         <li>
                             <a href="/#" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
                             <IoIosSettings />
