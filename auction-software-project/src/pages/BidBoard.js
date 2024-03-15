@@ -1,7 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import NewBid from '../components/NewBid';
 
 function BidBoard() {
+  const [bids, setBids] = useState([]);
+
+  useEffect(() => {
+    const fetchBids = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/bids');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setBids(data);
+      } catch (error) {
+        console.error('There was an error fetching the bids:', error);
+      }
+    };
+
+    fetchBids();
+  }, []);
+
+  const addNewBid = (newBid) => {
+    setBids(currentBids => [...currentBids, {
+      Bidder: newBid.Bidder,
+      BidAmount: newBid.BidAmount,
+      ToLead: newBid.ToLead,
+      PerAcre: newBid.PerAcre,
+      High: newBid.High,
+      Tract: newBid.Tract
+    }]);
+  };
 
   return (
          <div class="p-4 sm:ml-64 font-fira ">
@@ -9,7 +38,7 @@ function BidBoard() {
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400 ">
-                            Bidder
+                            Bidder Number
                         </th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
                             Bid Amount
@@ -29,114 +58,19 @@ function BidBoard() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className=" dark:bg-black">
-                        <th scope="row" className="border-gray-400 border-r-2 px-6 py-4 font-medium text-white-200 whitespace-nowrap dark:text-white">
-                            Hello
-                        </th>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td class="border-gray-400 border-r-2 px-6 py-4">
-                            $5
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $0.75
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td className=" border-gray-400 border-r-2 px-6 py-4">
-                            <span className='bg-blue-700 p-2 m-2'>1</span>
-                            <span className='bg-green-700 p-2 m-2'>2</span>
-                        </td>
+                {bids.map((bid, index) => (
+                    <tr key={index} className="dark:bg-black">
+                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.Bidder}</td>
+                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount}</td>
+                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead}</td>
+                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre}</td>
+                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
+                    <td className="border-gray-400 px-6 py-4">{bid.Tract}</td>
                     </tr>
-                    <tr className=" dark:bg-black">
-                        <th scope="row" className="border-gray-400 border-r-2 px-6 py-4 font-medium text-white-200 whitespace-nowrap dark:text-white">
-                            Hello
-                        </th>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td class="border-gray-400 border-r-2 px-6 py-4">
-                            $5
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $0.75
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td className=" border-gray-400 border-r-2 px-6 py-4">
-                            <span className='bg-blue-700 p-2 m-2'>3</span>
-                            <span className='bg-green-700 p-2 m-2'>4</span>
-                            <span className='bg-purple-700 p-2 m-2'>5</span>
-                        </td>
-                    </tr>
-                    <tr className=" dark:bg-black">
-                        <th scope="row" className="border-gray-400 border-r-2 px-6 py-4 font-medium text-white-200 whitespace-nowrap dark:text-white">
-                            Hello
-                        </th>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td class="border-gray-400 border-r-2 px-6 py-4">
-                            $5
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $0.75
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td className=" border-gray-400 border-r-2 px-6 py-4">
-                            <span className='bg-blue-700 p-2 m-2'>7</span>
-                        </td>
-                    </tr>
-                    <tr className=" dark:bg-black">
-                        <th scope="row" className="border-gray-400 border-r-2 px-6 py-4 font-medium text-white-200 whitespace-nowrap dark:text-white">
-                            Hello
-                        </th>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td class="border-gray-400 border-r-2 px-6 py-4">
-                            $5
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $0.75
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td className=" border-gray-400 border-r-2 px-6 py-4">
-                            <span className='bg-blue-700 p-2 m-2'>8</span>
-                            <span className='bg-green-700 p-2 m-2'>9</span>
-                        </td>
-                    </tr>
-                    <tr className=" dark:bg-black">
-                        <th scope="row" className="border-gray-400 border-r-2 px-6 py-4 font-medium text-white-200 whitespace-nowrap dark:text-white">
-                            Hello
-                        </th>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td class="border-gray-400 border-r-2 px-6 py-4">
-                            $5
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $0.75
-                        </td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">
-                            $1
-                        </td>
-                        <td className=" border-gray-400 border-r-2 px-6 py-4">
-                            <span className='bg-blue-700 p-2 m-2'>10</span>
-                        </td>
-                    </tr>
-
+                ))}
                 </tbody>
             </table>
-            <NewBid></NewBid>
+            <NewBid onNewBid={addNewBid}></NewBid>
         </div>
   );
 }
