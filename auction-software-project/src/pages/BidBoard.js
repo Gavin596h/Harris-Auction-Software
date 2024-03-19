@@ -60,12 +60,12 @@ function BidBoard() {
                 <tbody>
                 {bids.map((bid, index) => (
                     <tr key={index} className="dark:bg-black">
-                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.Bidder}</td>
-                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount}</td>
-                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead}</td>
-                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre}</td>
-                    <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
-                    <td className="border-gray-400 px-6 py-4">{bid.Tract}</td>
+                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.Bidder}</td>
+                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount}</td>
+                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead}</td>
+                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre}</td>
+                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
+                        <td className="border-gray-400 px-6 py-4">{bid.Tract}</td>
                     </tr>
                 ))}
                 </tbody>
