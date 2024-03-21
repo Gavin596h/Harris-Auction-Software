@@ -1,34 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const BidBoard = require('./BidSchema'); // Update the path as necessary
+const mongoose = require('mongoose');
+const BidBoard = require('./BidSchema');
 
-// Create a new bid
+// Create a new bid and update all the previous bids
 router.post('/bids', async (req, res) => {
+    const session = await mongoose.startSession();
     try {
-        const newBid = new BidBoard(req.body);
-        await newBid.save();
-        
-        // Determine if this is now the highest bid for the tract
-        const bidsForTract = await BidBoard.find({ Tract: newBid.Tract });
-        let highestBidAmount = newBid.BidAmount;
-        let highestBidId = newBid._id;
+        await session.startTransaction();
+        const { Tract, BidAmount } = req.body;
+        const tractNumbers = Tract.split(',').map(t => t.trim());
 
-        bidsForTract.forEach((bid) => {
-            if (bid.BidAmount > highestBidAmount) {
-                highestBidAmount = bid.BidAmount;
-                highestBidId = bid._id;
+        // Initialize variables to hold the sum of the highest bids and their IDs
+        let sumHighestBids = 0;
+        let highestBidsInfo = [];
+
+        // Iterate over each tract to find the highest bid
+        for (let tract of tractNumbers) {
+            let highestBidForTract = await BidBoard.findOne({ Tract: { $regex: `\\b${tract}\\b`, $options: 'i' } })
+                                                    .sort('-BidAmount')
+                                                    .session(session);
+
+            if (highestBidForTract) {
+                sumHighestBids += highestBidForTract.BidAmount;
+                highestBidsInfo.push({ tract: tract, amount: highestBidForTract.BidAmount, id: highestBidForTract._id });
             }
-        });
+        }
 
-        // Set all bids' High value to false for cleanup
-        await BidBoard.updateMany({ Tract: newBid.Tract }, { $set: { High: false } });
+        // Determine the minimum required bid amount to become the new highest bid
+        let requiredMinimumBid = sumHighestBids + 50; // Sum of highest bids + $50
 
-        // Then, set the highest bid's High value to true
-        await BidBoard.findByIdAndUpdate(highestBidId, { $set: { High: true } });
+        if (BidAmount <= requiredMinimumBid) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(400).json({ 
+                message: "Bid not high enough.", 
+                requiredMinimumBid: requiredMinimumBid, 
+                yourBid: BidAmount 
+            });
+        }
 
+        // Before marking the new bid as 'High', reset 'High' status for the previously highest bids
+        await Promise.all(highestBidsInfo.map(async (bidInfo) => {
+            await BidBoard.findByIdAndUpdate(bidInfo.id, { $set: { High: false } }, { session });
+        }));
+
+        // Save the new highest bid
+        const newBid = new BidBoard({ ...req.body, High: true });
+        await newBid.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
         res.status(201).json(newBid);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        if (session.inTransaction()) await session.abortTransaction();
+        session.endSession();
+        res.status(500).json({ message: error.message });
     }
 });
 

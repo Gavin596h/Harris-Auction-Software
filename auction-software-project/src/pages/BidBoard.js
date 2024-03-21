@@ -4,36 +4,25 @@ import NewBid from '../components/NewBid';
 function BidBoard() {
   const [bids, setBids] = useState([]);
 
-  useEffect(() => {
-    const fetchBids = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/bids');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setBids(data);
-      } catch (error) {
-        console.error('There was an error fetching the bids:', error);
+  const fetchBids = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/bids');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
+      const data = await response.json();
+      setBids(data);
+    } catch (error) {
+      console.error('There was an error fetching the bids:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchBids();
   }, []);
 
-  const addNewBid = (newBid) => {
-    setBids(currentBids => [...currentBids, {
-      Bidder: newBid.Bidder,
-      BidAmount: newBid.BidAmount,
-      ToLead: newBid.ToLead,
-      PerAcre: newBid.PerAcre,
-      High: newBid.High,
-      Tract: newBid.Tract
-    }]);
-  };
-
   return (
-         <div class="p-4 sm:ml-64 font-fira ">
+          <div className="p-4 sm:ml-64 font-fira">
             <table className="w-full text-sm text-gray-500 dark:text-white table-auto right-0">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
@@ -70,7 +59,7 @@ function BidBoard() {
                 ))}
                 </tbody>
             </table>
-            <NewBid onNewBid={addNewBid}></NewBid>
+            <NewBid fetchBids={fetchBids}></NewBid>
         </div>
   );
 }

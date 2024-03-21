@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const NewBid = ({ onNewBid }) => {
+const NewBid = ({ fetchBids }) => {
     const [bidderNumber, setBidderNumber] = useState('');
     const [tracts, setTracts] = useState('');
     const [bidAmount, setBidAmount] = useState('');
@@ -48,7 +48,7 @@ const NewBid = ({ onNewBid }) => {
             const createdBid = await response.json();
 
             // Here you might want to add the new bid to local state to update UI
-            onNewBid(createdBid);
+            fetchBids(createdBid);
             clearForm();
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
