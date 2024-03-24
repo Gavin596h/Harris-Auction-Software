@@ -256,7 +256,6 @@ function NewAuction() {
 
 {/* Find Auction */}
 
-            <fieldset>
                 <legend>Find Auction</legend>
                 <div class="flex flex-wrap mb-6 md:mb-0">
                     <select id="PastAuctions" name="PastAuctions" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
