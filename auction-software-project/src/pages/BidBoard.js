@@ -59,7 +59,7 @@ function BidBoard() {
                 ))}
                 </tbody>
             </table>
-            <NewBid fetchBids={fetchBids}></NewBid>
+            <NewBid></NewBid>
         </div>
   );
 }
