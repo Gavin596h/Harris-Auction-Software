@@ -1,3 +1,7 @@
+import '../style/NewAuction.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 import { useState,useEffect,useRef } from "react";
 
 function NewAuction() {
@@ -120,95 +124,173 @@ function NewAuction() {
   };
 
     return <>
+
+ <body>
+    <div class="font-fira w-full flex justify-center mt-10">
         <form onSubmit={handleSubmit}>
-            <fieldset>
-                <legend>Description</legend><br/>
-                <label for="AuctionName">Auction Name</label>
-                <input type="text" id="AuctionName" name="AuctionName" ref={auctionNameRef}></input>
-                <label for="AuctionNumber">Auction #</label>
-                <input type="number" id="AuctionNumber" name="AuctionNumber" ref={auctionNumberRef}></input><br/>
-                <label for="ActionDate">Auction Date</label>
-                <input type="date" id="AuctionDate" name="AuctionDate" ref={auctionDateRef}></input>
-                <label for="TractQuantity">Tract Quantity</label>
-                <input type="number" id="TractQuantity" name="TractQuantity" ref={tractQuantityRef}></input><br/>
-                <label for="UnitOfMeasurement">Unit of Measure (U/M)</label>
-                <select id="UnitOfMeasurement" name="UnitOfMeasurement" size="2" ref={unitOfMeasurementRef}>
-                    <option value="Acre">Acre</option>
-                    <option value="placeholder">placeholder</option>
-                </select>
-                <label for="NumOfDecPlaces">No. of U/M Decimal Places</label>
-                <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces" ref={numOfDecPlacesRef}></input><br/>
-                <label for="CollectiveUnitOfMeasurement">Collective U/M</label>
-                <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" size="2" ref={collectiveUnitOfMeasurementRef}>
-                    <option value="Tract">Tract</option>
-                    <option value="placeholder">placeholder</option>
-                </select>
-                <input type="submit" id="TractSetup" name="TractSetup" value="Tract Setup"></input><br/>
-            </fieldset><br/>
-            <fieldset>
-                <legend>Settings</legend>
-                <label for="BidMethod">Bid Method</label>
-                <select id="BidMethod" name="BidMethod" size="2" ref={bidMethodRef }>
-                    <option value="InTotal">In Total</option>
-                    <option value="placeholder">placeholder</option>
-                </select>
-                <input type="checkbox" id="PrintOrNot" name="PrintOrNot" ref={printOrNotRef}></input>
-                <label for="PrintOrNot">Print the bid board after each bid</label><br/>
-                <label for="NumberOfLeaderBoards">No. of leader boards to track</label>
-                <input type="number" id="NumberOfLeaderBoards" name="NumberOfLeaderBoards" ref={numberOfLeaderBoardsRef}></input>
-                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination" ref={warnOnCombinationRef}></input>
-                <label for="WarnOnCombination">Warn on new combination</label><br/>
-                <label for="HighColumn">"High" column description</label>
-                <select id="HighColumn" name="HighColumn" size="2" ref={highColumnRef}>
+{/* Description */}
+          <legend>Description</legend>
+
+          <div class="flex flex-wrap -mx-3">
+            <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionName">Auction Name</label>
+              <input type="text" id="AuctionName" name="AuctionName" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={auctionNameRef}></input>
+            </div>
+
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionDate">Date</label>
+              <input type="date" id="AuctionDate" name="AuctionDate" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={auctionDateRef}></input>
+            </div>
+            
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+              <label class="block tracking-wide mb-2" for="AuctionNumber">Auction #</label>
+              <input type="number" id="AuctionNumber" name="AuctionNumber" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={auctionNumberRef}></input>
+            </div>
+            
+            <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
+              <div class="w-3/6">
+                <label class="block tracking-wide mb-2"  for="TractQuantity">Tract</label>
+                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={tractQuantityRef} ></input>
+              </div>
+              <div class="w-3/6 ml-5">
+                  <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
+                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={unitOfMeasurementRef}>
+                          <option value="Acre">Acre</option>
+                          <option value="placeholder">placeholder</option>
+                      </select>
+                  </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-2/12 px-3 mb-6 md:mb-0">
+                <label class="block tracking-wide mb-2" for="NumOfDecPlaces">U/M Decimal Places</label>
+                <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces"  class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={numOfDecPlacesRef}></input>
+            </div>
+              <div class="w-2/12">
+                <label for="CollectiveUnitOfMeasurement" class="block tracking-wide mb-2 ml-5" >Collective U/M</label>
+                    <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" class="rounded block w-full py-2 px-4 mb-3 leading-tight ml-5 bg-gray-200" ref={collectiveUnitOfMeasurementRef}>
+                      <option value="Tract">Tract</option>
+                      <option value="placeholder">placeholder</option>
+                    </select>
+                </div>
+          </div>
+              <div class="w-full md:w-1/4 md:mb-0">
+                <button type="submit" id="TractSetup" name="TractSetup" class="bg-red-500 py-2 px-4 rounded text-white" >Tract Setup</button>
+              </div>
+{/* End of Description */}
+<hr/>
+{/*Settings */}
+          <legend>Settings</legend>
+          <div class="flex flex-wrap -mx-3">
+            <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+                <label for="BidMethod"  class="block tracking-wide mb-2 ">Bid Method</label>
+                  <select id="BidMethod" name="BidMethod" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={bidMethodRef }>
+                      <option value="InTotal">In Total</option>
+                      <option value="placeholder">placeholder</option>
+                  </select>
+            </div>
+
+            <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                <label for="HighColumn" class="block tracking-wide mb-2">"High" column description</label>
+                  <select id="HighColumn" name="HighColumn" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={highColumnRef}>
                     <option value="High">High</option>
                     <option value="placeholder">placeholder</option>
-                </select>
-                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" ref={bidQueryCombinationRef}></input>
-                <label for="BidQueryCombination">Bid query combination</label><br/>
-                <input type="button" id="SetAsDefault" name="SetAsDefault" value="Set as default"></input><br/>
-            </fieldset><br/>
-            <fieldset>
-                <legend>Terms</legend>
-                <input type="checkbox" id="BuyersPrem" name="BuyersPrem" ref={buyersPremRef}></input>
-                <label for="BuyersPrem">Buyer's premium</label>
-                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" ref={buyersPremPercentRef}></input>
-                <label for="BuyersPremPercent">%</label><br/>
-                <input type="radio" id="None" name="group1" value="None" ref={depositTypeNoneRef}/>
-                <label for="None">None</label><br/>
-                <label for="Percent">Deposit: </label>
-                <input type="radio" id="Percent" name="group1" value="Percent" ref={depositTypePercentRef}/>
-                <label for="Percent">Percent</label>
-                <input type="number" id="PercentOrAmount" name="PercentOrAmount" ref={percentOrAmountRef}></input><br/>
-                <input type="radio" id="Amount" name="group1" value="Amount" ref={depositTypeAmountRef}/>
-                <label for="Amount">Amount</label><br/>
-            </fieldset><br/>
-            <fieldset>
-                <legend>System</legend>
-                <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate"></input>
-                <input type="button" id="EventLog" name="EventLog" value="Event Log"></input><br/>
-                <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults"></input>
-                <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title"></input><br/>
-            </fieldset><br/>
+                  </select>
+            </div>
+            </div>
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"  ref={warnOnCombinationRef}></input>
+                <label class="ms-2"  for="WarnOnCombination">Warn on new combination</label>
+            </div>
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600" ref={bidQueryCombinationRef}></input>
+                <label  class="ms-2" for="BidQueryCombination">Bid query combination</label>
+            </div>
+
+{/*Forgot name of id and name */}   
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"  ref={printOrNotRef}></input>
+                <label  class="ms-2" for="BidQueryCombination">Print the bid board after each bid</label>
+            </div>
+              <div class="w-full md:w-1/4 md:mb-0">
+                <button type="submit" id="SetAsDefault" name="SetAsDefault" class="bg-red-500 py-2 px-4 rounded text-white" >Set As Default</button>
+              </div>
+{/* End of Settings */}
+
+<hr/>
+{/* Terms */}
+        <legend>Terms</legend>
+        <div class="flex flex-wrap -mx-3">
+            <div class=" md:w-1/6 px-3 mb-6 md:mb-0">
+                <label class="block tracking-wide mb-2" for="BuyersPrem">Buyer's Premium</label>
+                <input type="number" id="BuyersPrem" name="BuyersPrem" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={buyersPremRef}></input>
+            </div>
+            <div class="flex w-1/6 px-3 mb-6 md:mb-0">
+              <div class="w-3/6">
+                <label class="block tracking-wide mb-2"  for="BuyersPremPercent">Deposit</label>
+                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={buyersPremPercentRef} ></input>
+              </div>
+              <div class="w-3/6 ml-5">
+                  <label for="PercentOrAmount" class="block tracking-wide mb-2  ml-5" >Units</label>
+                      <select id="PercentOrAmount" name="PercentOrAmount" class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={percentOrAmountRef}>
+                          <option value="Percent" ref={depositTypeAmountRef}>Amount</option>
+                          <option value="Percent" ref={depositTypePercentRef}>Percent</option>
+                          <option value="None" ref={depositTypeNoneRef}>None</option>
+
+                      </select>
+                  </div>
+            </div>
+          </div>
+          <hr/>
+
+{/* Settings */}
+          <legend>Settings</legend>
+          <div class="flex flex-wrap mb-6 md:mb-0 text-white">
+            <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="EventLog" name="EventLog" value="Event Log" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input><br/>
+          </div>
+          <hr/>
+
+{/* Find Auction */}
+
             <fieldset>
                 <legend>Find Auction</legend>
-                <select id="PastAuctions" name="PastAuctions" size="1" onChange={handlePastAuctionSelect}>
-                  {pastAuctions.length > 0 ? (
-                    pastAuctions.map(auction => (
-                      <option key={auction._id} value={auction._id}>{auction.AuctionName}</option>
-                        ))
-                  ) : (
-                    <option>Loading...</option>
-                  )}
-                </select>
-                <input type="button" id="BidBoards" name="BidBoards" value="Bid Boards"></input>
-                <input type="button" id="ReportsOrFile" name="ReportsOrFile" value="Reports / File"></input><br/>
-                <label>Sort By: </label>
-                <input type="radio" id="AuctionNameSearch" name="group2" value="Auction Name" />
-                <label for="AuctionNameSearch">Auction Name</label>
-                <input type="radio" id="AuctionDateSearch" name="group2" value="Auction Date" />
-                <label for="AuctionDateSearch">Auction Date</label>
-            </fieldset>
-        </form>
+                <div class="flex flex-wrap mb-6 md:mb-0">
+                    <select id="PastAuctions" name="PastAuctions" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                        {pastAuctions.length > 0 ? (
+                        pastAuctions.map(auction => (
+                          <option key={auction._id} value={auction._id}>{auction.AuctionName}</option>
+                            ))
+                      ) : (
+                        <option>Loading...</option>
+                      )}
+                    </select>
+                  </div>
+
+                  
+              <div class="w-full md:w-1/4 mb-6 md:mb-0">
+                  <label for="Sort" class="block tracking-wide mb-2">Sort By</label>
+                    <select id="Sort" name="Sort" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                      <option value="Date">Date</option>
+                      <option value="Name">Name</option>
+                    </select>
+              </div>
+              <div class="flex flex-wrap mb-6 md:mb-0 text-white">
+                <input type="button" id="BidBoards" name="BidBoards" value="Bid Boards" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
+                <input type="button" id="ReportsOrFile" name="ReportsOrFile" value="Reports / File" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+              </div>
+           
+            <hr/>
+            <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
+                <input type="button" id="Create" name="Create" value="Start Auction" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
+                <input type="button" id="Save" name="Save" value="Save" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+              </div>        
+            </form>
+        </div>
+    </body>
     </>
 }
 

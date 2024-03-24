@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const auctionRoutes = require('./AuctionCRUD')
+const bidCRUDRoutes = require('./BidCRUD');
 
 const app = express();
 
@@ -15,6 +16,7 @@ mongoose.connect('mongodb+srv://semerson5:auctionsetup32@auction-cluster.supuo6g
 useUnifiedTopology: true,})
 
 app.use('/', auctionRoutes);
+app.use('/api', bidCRUDRoutes);
 
 // Start the server
 app.listen(port, () => {

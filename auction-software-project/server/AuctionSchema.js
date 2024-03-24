@@ -18,6 +18,7 @@ const AuctionSchema = new mongoose.Schema({
   BuyersPrem: Boolean,
   BuyersPremPercent: Number,
   DepositType: String,
+  DepositAmount: Number,
   PercentOrAmount: Number,
   completed: Boolean
 });

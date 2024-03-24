@@ -5,6 +5,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NewAuction from './pages/NewAuction';
 import Home from './pages/Home';
+import BidBoard from './pages/BidBoard';
 
 function App() {
   const [ showNav, setShowNav ] = useState(false)
@@ -12,14 +13,16 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <header>
+        {/* <header>
           <GiHamburgerMenu onClick={() => setShowNav(!showNav)}/>
-        </header>
+        </header> */}
 
-        <Navbar show={showNav}/>
-        <Routes className='main'>
-          <Route path="/" exact={true} element={<Home/>}/>
+        <Navbar/>
+        <Routes>
+          <Route path="/bid-board" exact={true} element={<BidBoard/>}/>
           <Route path="/new-auction" exact={true} element={<NewAuction/>}/>
+          <Route path="/home" exact={true} element={<Home/>}/>
+
         </Routes>
       </Router>
     </div>
