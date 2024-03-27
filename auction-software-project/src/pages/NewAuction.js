@@ -109,7 +109,44 @@ function NewAuction() {
       }
     };
 
-    return <div className="NewAuction">
+ 
+  
+  const [tractAcres, setTractAcres] = useState([]);
+  const [popupMenuVisible, setPopupMenuVisible] = useState(false);
+
+  const handleTractQuantityChange = () => {
+    const quantity = parseInt(tractQuantityRef.current.value);
+    if (!isNaN(quantity) && quantity > 0) {
+      setTractAcres(new Array(quantity).fill(0));
+      setPopupMenuVisible(true); 
+    } else {
+      alert("Please enter a valid number of tracts.");
+    }
+  };
+
+   
+   const handleClosePopup = () => {
+    setPopupMenuVisible(false);
+    
+  };
+
+  const handleAcresChange = (index, event) => {
+    const newTractAcres = [...tractAcres];
+    const acresValue = parseFloat(event.target.value);
+    if (!isNaN(acresValue) && acresValue >= 0) {
+      newTractAcres[index] = acresValue;
+      setTractAcres(newTractAcres);
+    } else {
+      alert("Please enter a valid number for acres.");
+    }
+  };
+
+  const calculateTotalAcres = () => {
+    return tractAcres.reduce((total, acres) => total + (acres || 0), 0);
+  };
+
+
+  return <div className="NewAuction">
 
  <body>
     <div class="font-fira w-full flex justify-center mt-10">
@@ -138,6 +175,28 @@ function NewAuction() {
                 <label class="block tracking-wide mb-2"  for="TractQuantity">Tract</label>
                 <input type="number" id="TractQuantity" name="TractQuantity" value={formData.TractQuantity} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
               </div>
+
+              {popupMenuVisible && (
+              <div className="popup-menu bg-gray-200 px-4 py-2">
+                <h3>Enter Acres for Each Tract</h3>
+                {tractAcres.map((acres, index) => (
+                  <div key={index}>
+                    <label>
+                      Tract {index + 1}: 
+                      <input 
+                        type="number" 
+                        value={acres || ''} 
+                        onChange={(event) => handleAcresChange(index, event)}
+                        min="1" 
+                        step="any" 
+                      />
+                    </label>
+                  </div>
+                ))}
+                <button onClick={handleClosePopup} disabled={tractAcres.some(acres => acres <= 0 || acres === '')}>Done</button>
+              </div>
+            )}
+            
               <div class="w-3/6 ml-5">
                   <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
                       <select id="UnitOfMeasurement" name="UnitOfMeasurement" value={formData.UnitOfMeasurement} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
