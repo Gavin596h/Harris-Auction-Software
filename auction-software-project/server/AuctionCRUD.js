@@ -30,4 +30,19 @@ router.get('/pastAuctions', async (req, res) => {
   }
 });
 
+router.get('/getAuction/:id', async (req, res) => {
+  try {
+    const auction = await Auction.findById(req.params.id);
+    if (auction) {
+      res.json(auction);
+    } else {
+      console.log('No auction found with that ID');
+      res.status(404).json({ message: 'No auction found' });
+    }
+  } catch (error) {
+    console.error('Error fetching auction:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports=router;

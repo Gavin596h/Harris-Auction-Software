@@ -5,156 +5,142 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState,useEffect,useRef } from "react";
 
 function NewAuction() {
+
+  const [formData, setFormData] = useState({
+    AuctionName: '',
+    AuctionDate: '',
+    AuctionNumber: '',
+    TractQuantity: '',
+    UnitOfMeasurement: 'Acre', // Default value
+    NumOfDecPlaces: '',
+    CollectiveUnitOfMeasurement: 'Tract', // Default value
+    BidMethod: 'InTotal', // Default or fetched value
+    NumberOfLeaderBoards: '',
+    HighColumn: 'High', // Default or fetched value
+    PrintOrNot: false,
+    WarnOnCombination: false,
+    BidQueryCombination: false,
+    BuyersPrem: false,
+    BuyersPremPercent: '',
+    DepositType: 'None', // Default or fetched value
+    PercentOrAmount: 0, // Default or fetched value
+  });
+
+  const [pastAuctions, setPastAuctions] = useState([]);
+
+  useEffect(() => {
+    const fetchPastAuctions = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/pastAuctions');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const auctions = await response.json();
+        setPastAuctions(auctions);
+      } catch (error) {
+        console.error('Failed to fetch past auctions:', error);
+      }
+    };
+
+    fetchPastAuctions();
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-
-    // Handle boolean values explicitly
-    formData.set('PrintOrNot', formData.has('PrintOrNot'));
-    formData.set('WarnOnCombination', formData.has('WarnOnCombination'));
-    formData.set('BidQueryCombination', formData.has('BidQueryCombination'));
-    formData.set('BuyersPrem', formData.has('BuyersPrem'));
-
-    // Handle DepositType based on radio button selection
-    const depositType = formData.get('group1'); // 'None', 'Percent', or 'Amount'
-    formData.delete('group1'); // Remove it from formData since 'group1' is not part of the schema
-    if (depositType !== 'None') {
-      formData.set('DepositType', depositType);
-    } else {
-      formData.set('DepositType', '');
-      formData.set('PercentOrAmount', 0); // Reset this value if 'None' is selected
-    }
-
-  const formProps = Object.fromEntries(formData);
-
+    event.preventDefault(); // Prevent default if using <form> or just to catch it
+  
+    // Assuming formData is already up to date due to handleChange
     try {
       const response = await fetch('http://localhost:3001/AuctionCRUD', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formProps),
+        body: JSON.stringify(formData), // Use state directly
       });
       if (response.ok) {
         console.log('Auction submitted successfully');
+        // Optionally clear form/reset state here
       } else {
         console.error('Submission failed');
       }
     } catch (error) {
       console.error('Error:', error);
     }
-  };
-
-  const [pastAuctions, setPastAuctions] = useState([]);
-
-    useEffect(() => {
-      const fetchPastAuctions = async () => {
-          try {
-              const response = await fetch('http://localhost:3001/pastAuctions');
-              if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              const auctions = await response.json();
-              setPastAuctions(auctions);
-          } catch (error) {
-              console.error('Failed to fetch past auctions:', error);
-          }
-      };
-
-      fetchPastAuctions();
-    }, []);
-
-    const auctionNameRef = useRef();
-    const auctionNumberRef = useRef();
-    const auctionDateRef = useRef();
-    const tractQuantityRef = useRef();
-    const unitOfMeasurementRef = useRef();
-    const numOfDecPlacesRef = useRef();
-    const collectiveUnitOfMeasurementRef = useRef();
-    const bidMethodRef = useRef();
-    const numberOfLeaderBoardsRef = useRef();
-    const highColumnRef = useRef();
-    const printOrNotRef = useRef();
-    const warnOnCombinationRef = useRef();
-    const bidQueryCombinationRef = useRef();
-    const buyersPremRef = useRef();
-    const buyersPremPercentRef = useRef();
-    const depositTypeRef = useRef();
-    const percentOrAmountRef = useRef();
-    const depositTypeNoneRef = useRef();
-    const depositTypePercentRef = useRef();
-    const depositTypeAmountRef = useRef();
-
+  }; 
 
     const handlePastAuctionSelect = async (event) => {
       const auctionId = event.target.value;
-      const selectedAuction = pastAuctions.find(auction => auction._id === auctionId);
-      if (selectedAuction) {
-          auctionNameRef.current.value = selectedAuction.AuctionName || '';
-          auctionNumberRef.current.value = selectedAuction.AuctionNumber || '';
-          auctionDateRef.current.value = selectedAuction.AuctionDate ? selectedAuction.AuctionDate.split('T')[0] : ''; // Assuming AuctionDate is in ISO format
-          tractQuantityRef.current.value = selectedAuction.TractQuantity || '';
-          unitOfMeasurementRef.current.value = selectedAuction.UnitOfMeasurement || '';
-          numOfDecPlacesRef.current.value = selectedAuction.NumOfDecPlaces || '';
-          collectiveUnitOfMeasurementRef.current.value = selectedAuction.CollectiveUnitOfMeasurement || '';
-          bidMethodRef.current.value = selectedAuction.BidMethod || '';
-          numberOfLeaderBoardsRef.current.value = selectedAuction.NumberOfLeaderBoards || '';
-          highColumnRef.current.value = selectedAuction.HighColumn || '';
-          printOrNotRef.current.checked = selectedAuction.PrintOrNot || false;
-          warnOnCombinationRef.current.checked = selectedAuction.WarnOnCombination || false;
-          bidQueryCombinationRef.current.checked = selectedAuction.BidQueryCombination || false;
-          buyersPremRef.current.checked = selectedAuction.BuyersPrem || false;
-          buyersPremPercentRef.current.value = selectedAuction.BuyersPremPercent || '';
-
-          depositTypeNoneRef.current.checked = false;
-          depositTypePercentRef.current.checked = false;
-          depositTypeAmountRef.current.checked = false;
-  
-          // For DepositType, you might need a more complex handling depending on how it's structured
-          // This is a simple example assuming you have refs for radio buttons
-          if (selectedAuction.DepositType === 'None') {
-              depositTypeNoneRef.current.checked = true;
-          } else if (selectedAuction.DepositType === 'Percent') {
-              depositTypePercentRef.current.checked = true;
-          } else if (selectedAuction.DepositType === 'Amount') {
-              depositTypeAmountRef.current.checked = true;
-          }
-          percentOrAmountRef.current.value = selectedAuction.PercentOrAmount || '';
+      try {
+        const response = await fetch(`http://localhost:3001/getAuction/${auctionId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const selectedAuction = await response.json();
+        setFormData({
+          ...formData,
+          AuctionName: selectedAuction.AuctionName || '',
+          AuctionDate: selectedAuction.AuctionDate ? selectedAuction.AuctionDate.split('T')[0] : '',
+          AuctionNumber: selectedAuction.AuctionNumber.toString() || '', // Ensure this is a string for the input
+          TractQuantity: selectedAuction.TractQuantity.toString() || '', // Convert to string if necessary
+          UnitOfMeasurement: selectedAuction.UnitOfMeasurement || 'Acre',
+          NumOfDecPlaces: selectedAuction.NumOfDecPlaces.toString() || '', // Convert to string
+          CollectiveUnitOfMeasurement: selectedAuction.CollectiveUnitOfMeasurement || 'Tract',
+          BidMethod: selectedAuction.BidMethod || 'InTotal',
+          NumberOfLeaderBoards: selectedAuction.NumberOfLeaderBoards.toString() || '',
+          HighColumn: selectedAuction.HighColumn || 'High',
+          PrintOrNot: !!selectedAuction.PrintOrNot,
+          WarnOnCombination: !!selectedAuction.WarnOnCombination,
+          BidQueryCombination: !!selectedAuction.BidQueryCombination,
+          BuyersPrem: !!selectedAuction.BuyersPrem,
+          BuyersPremPercent: selectedAuction.BuyersPremPercent || 0,
+          DepositType: selectedAuction.DepositType || '',
+          PercentOrAmount: selectedAuction.PercentOrAmount || 0, // Ensure this is correctly handled
+        });
+      } catch (error) {
+        console.error('Failed to fetch auction details:', error);
       }
-  };
+    };
 
-    return <>
+    return <div className="NewAuction">
 
  <body>
     <div class="font-fira w-full flex justify-center mt-10">
-        <form onSubmit={handleSubmit}>
+        <form>
 {/* Description */}
           <legend>Description</legend>
 
           <div class="flex flex-wrap -mx-3">
             <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
               <label class="block tracking-wide mb-2" for="AuctionName">Auction Name</label>
-              <input type="text" id="AuctionName" name="AuctionName" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={auctionNameRef}></input>
+              <input type="text" id="AuctionName" name="AuctionName" value={formData.AuctionName} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
             </div>
 
             <div class="w-2/12 px-3 mb-6 md:mb-0">
               <label class="block tracking-wide mb-2" for="AuctionDate">Date</label>
-              <input type="date" id="AuctionDate" name="AuctionDate" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={auctionDateRef}></input>
+              <input type="date" id="AuctionDate" name="AuctionDate" value={formData.AuctionDate} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
             </div>
             
             <div class="w-2/12 px-3 mb-6 md:mb-0">
               <label class="block tracking-wide mb-2" for="AuctionNumber">Auction #</label>
-              <input type="number" id="AuctionNumber" name="AuctionNumber" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={auctionNumberRef}></input>
+              <input type="number" id="AuctionNumber" name="AuctionNumber" value={formData.AuctionNumber} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
             </div>
             
             <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
               <div class="w-3/6">
                 <label class="block tracking-wide mb-2"  for="TractQuantity">Tract</label>
-                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={tractQuantityRef} ></input>
+                <input type="number" id="TractQuantity" name="TractQuantity" value={formData.TractQuantity} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
               </div>
               <div class="w-3/6 ml-5">
                   <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
-                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={unitOfMeasurementRef}>
+                      <select id="UnitOfMeasurement" name="UnitOfMeasurement" value={formData.UnitOfMeasurement} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
                           <option value="Acre">Acre</option>
                           <option value="placeholder">placeholder</option>
                       </select>
@@ -165,11 +151,11 @@ function NewAuction() {
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-2/12 px-3 mb-6 md:mb-0">
                 <label class="block tracking-wide mb-2" for="NumOfDecPlaces">U/M Decimal Places</label>
-                <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces"  class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={numOfDecPlacesRef}></input>
+                <input type="number" id="NumOfDecPlaces" name="NumOfDecPlaces" value={formData.NumOfDecPlaces} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
             </div>
               <div class="w-2/12">
                 <label for="CollectiveUnitOfMeasurement" class="block tracking-wide mb-2 ml-5" >Collective U/M</label>
-                    <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" class="rounded block w-full py-2 px-4 mb-3 leading-tight ml-5 bg-gray-200" ref={collectiveUnitOfMeasurementRef}>
+                    <select id="CollectiveUnitOfMeasurement" name="CollectiveUnitOfMeasurement" value={formData.CollectiveUnitOfMeasurement} onChange={handleChange} class="rounded block w-full py-2 px-4 mb-3 leading-tight ml-5 bg-gray-200">
                       <option value="Tract">Tract</option>
                       <option value="placeholder">placeholder</option>
                     </select>
@@ -185,7 +171,7 @@ function NewAuction() {
           <div class="flex flex-wrap -mx-3">
             <div class="w-full md:w-1/6 px-3 mb-6 md:mb-0">
                 <label for="BidMethod"  class="block tracking-wide mb-2 ">Bid Method</label>
-                  <select id="BidMethod" name="BidMethod" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={bidMethodRef }>
+                  <select id="BidMethod" name="BidMethod" value={formData.BidMethod} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
                       <option value="InTotal">In Total</option>
                       <option value="placeholder">placeholder</option>
                   </select>
@@ -193,25 +179,25 @@ function NewAuction() {
 
             <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                 <label for="HighColumn" class="block tracking-wide mb-2">"High" column description</label>
-                  <select id="HighColumn" name="HighColumn" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={highColumnRef}>
+                  <select id="HighColumn" name="HighColumn" value={formData.HighColumn} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
                     <option value="High">High</option>
                     <option value="placeholder">placeholder</option>
                   </select>
             </div>
             </div>
             <div class="flex items-center mb-4">
-                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"  ref={warnOnCombinationRef}></input>
+                <input type="checkbox" id="WarnOnCombination" name="WarnOnCombination" checked={formData.WarnOnCombination} onChange={handleChange} class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"></input>
                 <label class="ms-2"  for="WarnOnCombination">Warn on new combination</label>
             </div>
             <div class="flex items-center mb-4">
-                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600" ref={bidQueryCombinationRef}></input>
+                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" checked={formData.BidQueryCombination} onChange={handleChange} class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"></input>
                 <label  class="ms-2" for="BidQueryCombination">Bid query combination</label>
             </div>
 
 {/*Forgot name of id and name */}   
             <div class="flex items-center mb-4">
-                <input type="checkbox" id="BidQueryCombination" name="BidQueryCombination" class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"  ref={printOrNotRef}></input>
-                <label  class="ms-2" for="BidQueryCombination">Print the bid board after each bid</label>
+                <input type="checkbox" id="PrintOrNot" name="PrintOrNot" checked={formData.PrintOrNot} onChange={handleChange} class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"></input>
+                <label  class="ms-2" for="PrintOrNot">Print the bid board after each bid</label>
             </div>
               <div class="w-full md:w-1/4 md:mb-0">
                 <button type="submit" id="SetAsDefault" name="SetAsDefault" class="bg-red-500 py-2 px-4 rounded text-white" >Set As Default</button>
@@ -223,23 +209,27 @@ function NewAuction() {
         <legend>Terms</legend>
         <div class="flex flex-wrap -mx-3">
             <div class=" md:w-1/6 px-3 mb-6 md:mb-0">
-                <label class="block tracking-wide mb-2" for="BuyersPrem">Buyer's Premium</label>
-                <input type="number" id="BuyersPrem" name="BuyersPrem" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={buyersPremRef}></input>
+                <input type="checkbox" id="BuyersPrem" name="BuyersPrem" checked={formData.BuyersPrem} onChange={handleChange} class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"></input>
+                <label class="ms-2" for="BuyersPrem">Buyer's Premium</label>
             </div>
             <div class="flex w-1/6 px-3 mb-6 md:mb-0">
               <div class="w-3/6">
-                <label class="block tracking-wide mb-2"  for="BuyersPremPercent">Deposit</label>
-                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={buyersPremPercentRef} ></input>
+                <label class="block tracking-wide mb-2"  for="BuyersPremPercent">B.P. Percent</label>
+                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" value={formData.BuyersPremPercent} onChange={handleChange} class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
               </div>
               <div class="w-3/6 ml-5">
-                  <label for="PercentOrAmount" class="block tracking-wide mb-2  ml-5" >Units</label>
-                      <select id="PercentOrAmount" name="PercentOrAmount" class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={percentOrAmountRef}>
-                          <option value="Percent" ref={depositTypeAmountRef}>Amount</option>
-                          <option value="Percent" ref={depositTypePercentRef}>Percent</option>
-                          <option value="None" ref={depositTypeNoneRef}>None</option>
+                  <label for="DepositType" class="block tracking-wide mb-2  ml-5" >Deposit Type</label>
+                      <select id="DepositType" name="DepositType" value={formData.DepositType} onChange={handleChange} class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                          <option value="Amount" >Amount</option>
+                          <option value="Percent" >Percent</option>
+                          <option value="None" >None</option>
 
                       </select>
-                  </div>
+                </div>
+              </div>
+            <div>
+                <label class="block tracking-wide mb-2"  for="PercentOrAmount">Deposit Percent Or Amount</label>
+                <input type="number" id="PercentOrAmount" name="PercentOrAmount" value={formData.PercentOrAmount} onChange={handleChange} class="block w-1/2 py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
             </div>
           </div>
           <hr/>
@@ -258,7 +248,7 @@ function NewAuction() {
 
                 <legend>Find Auction</legend>
                 <div class="flex flex-wrap mb-6 md:mb-0">
-                    <select id="PastAuctions" name="PastAuctions" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+                    <select id="PastAuctions" name="PastAuctions" onChange={handlePastAuctionSelect} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
                         {pastAuctions.length > 0 ? (
                         pastAuctions.map(auction => (
                           <option key={auction._id} value={auction._id}>{auction.AuctionName}</option>
@@ -285,12 +275,12 @@ function NewAuction() {
             <hr/>
             <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
                 <input type="button" id="Create" name="Create" value="Start Auction" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
-                <input type="button" id="Save" name="Save" value="Save" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+                <input type="button" id="Save" name="Save" value="Save" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
               </div>        
             </form>
         </div>
     </body>
-    </>
+    </div>
 }
 
 export default NewAuction

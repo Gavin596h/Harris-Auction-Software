@@ -22,7 +22,7 @@ const Navbar = () => {
                     </li>
                     <li>
                         <NavLink to="/new-auction" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'><RiAuctionFill /> 
-                            <span class="ml-3">New Acution</span> 
+                            <span class="ml-3">New Auction</span> 
                         </NavLink>
                     </li>
                     <li>
