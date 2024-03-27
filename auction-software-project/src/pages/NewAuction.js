@@ -85,6 +85,8 @@ function NewAuction() {
     const depositTypePercentRef = useRef();
     const depositTypeAmountRef = useRef();
 
+    
+
 
     const handlePastAuctionSelect = async (event) => {
       const auctionId = event.target.value;
@@ -123,6 +125,43 @@ function NewAuction() {
       }
   };
 
+ 
+  
+  const [tractAcres, setTractAcres] = useState([]);
+  const [popupMenuVisible, setPopupMenuVisible] = useState(false);
+
+  const handleTractQuantityChange = () => {
+    const quantity = parseInt(tractQuantityRef.current.value);
+    if (!isNaN(quantity) && quantity > 0) {
+      setTractAcres(new Array(quantity).fill(0));
+      setPopupMenuVisible(true); 
+    } else {
+      alert("Please enter a valid number of tracts.");
+    }
+  };
+
+   
+   const handleClosePopup = () => {
+    setPopupMenuVisible(false);
+    
+  };
+
+  const handleAcresChange = (index, event) => {
+    const newTractAcres = [...tractAcres];
+    const acresValue = parseFloat(event.target.value);
+    if (!isNaN(acresValue) && acresValue >= 0) {
+      newTractAcres[index] = acresValue;
+      setTractAcres(newTractAcres);
+    } else {
+      alert("Please enter a valid number for acres.");
+    }
+  };
+
+  const calculateTotalAcres = () => {
+    return tractAcres.reduce((total, acres) => total + (acres || 0), 0);
+  };
+
+
     return <>
 
  <body>
@@ -149,9 +188,31 @@ function NewAuction() {
             
             <div class="flex w-full md:w-1/4 px-3 mb-6 md:mb-0">
               <div class="w-3/6">
-                <label class="block tracking-wide mb-2"  for="TractQuantity">Tract</label>
-                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" ref={tractQuantityRef} ></input>
+                <button class="block tracking-wide mb-2"  for="TractQuantity">Tract</button>
+                <input type="number" id="TractQuantity" name="TractQuantity" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded" onChange={handleTractQuantityChange} min="1" ref={tractQuantityRef} ></input>
               </div>
+
+              {popupMenuVisible && (
+              <div className="popup-menu bg-gray-200 px-4 py-2">
+                <h3>Enter Acres for Each Tract</h3>
+                {tractAcres.map((acres, index) => (
+                  <div key={index}>
+                    <label>
+                      Tract {index + 1}: 
+                      <input 
+                        type="number" 
+                        value={acres || ''} 
+                        onChange={(event) => handleAcresChange(index, event)}
+                        min="1" 
+                        step="any" 
+                      />
+                    </label>
+                  </div>
+                ))}
+                <button onClick={handleClosePopup} disabled={tractAcres.some(acres => acres <= 0 || acres === '')}>Done</button>
+              </div>
+            )}
+            
               <div class="w-3/6 ml-5">
                   <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
                       <select id="UnitOfMeasurement" name="UnitOfMeasurement" class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"  ref={unitOfMeasurementRef}>
