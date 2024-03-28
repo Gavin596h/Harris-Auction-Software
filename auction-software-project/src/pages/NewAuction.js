@@ -2,7 +2,7 @@ import '../style/NewAuction.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-import { useState,useEffect,useRef } from "react";
+import { useState,useEffect } from "react";
 
 function NewAuction() {
 
@@ -11,6 +11,7 @@ function NewAuction() {
     AuctionDate: '',
     AuctionNumber: '',
     TractQuantity: '',
+    TractAcres: [],
     UnitOfMeasurement: 'Acre', // Default value
     NumOfDecPlaces: '',
     CollectiveUnitOfMeasurement: 'Tract', // Default value
@@ -78,25 +79,29 @@ function NewAuction() {
       alert("Please enter a valid number for acres.");
     }
   };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default if using <form> or just to catch it
   
-    // Assuming formData is already up to date due to handleChange
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const updatedFormData = {
+      ...formData,
+      TractAcres: tractAcres,
+      AuctionNumber: parseInt(formData.AuctionNumber, 10),
+      TractQuantity: parseInt(formData.TractQuantity, 10),
+      BuyersPremPercent: parseFloat(formData.BuyersPremPercent),
+      PercentOrAmount: parseFloat(formData.PercentOrAmount),
+    };
+
     try {
       const response = await fetch('http://localhost:3001/AuctionCRUD', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // Use state directly
+        body: JSON.stringify(updatedFormData),
       });
-      if (response.ok) {
-        console.log('Auction submitted successfully');
-        // Optionally clear form/reset state here
-      } else {
-        console.error('Submission failed');
-      }
+      if (!response.ok) throw new Error('Submission failed');
+      console.log('Auction submitted successfully');
     } catch (error) {
       console.error('Error:', error);
     }
