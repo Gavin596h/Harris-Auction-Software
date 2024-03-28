@@ -14,19 +14,21 @@ function NewAuction() {
     UnitOfMeasurement: 'Acre', // Default value
     NumOfDecPlaces: '',
     CollectiveUnitOfMeasurement: 'Tract', // Default value
-    BidMethod: 'InTotal', // Default or fetched value
+    BidMethod: 'InTotal', // Default value
     NumberOfLeaderBoards: '',
-    HighColumn: 'High', // Default or fetched value
+    HighColumn: 'High', // Defaul value
     PrintOrNot: false,
     WarnOnCombination: false,
     BidQueryCombination: false,
     BuyersPrem: false,
-    BuyersPremPercent: '',
-    DepositType: 'None', // Default or fetched value
-    PercentOrAmount: 0, // Default or fetched value
+    BuyersPremPercent: 0,
+    DepositType: 'None', // Default value
+    PercentOrAmount: 0, // Default value
   });
 
   const [pastAuctions, setPastAuctions] = useState([]);
+  const [tractAcres, setTractAcres] = useState([]);
+  const [popupMenuVisible, setPopupMenuVisible] = useState(false);
 
   useEffect(() => {
     const fetchPastAuctions = async () => {
@@ -51,6 +53,30 @@ function NewAuction() {
       ...prevFormData,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    if(name === "TractQuantity") {
+      handleTractQuantityChange(value);
+    }
+  };
+
+  const handleTractQuantityChange = (value) => {
+    const quantity = parseInt(value, 10);
+    if (!isNaN(quantity) && quantity > 0) {
+      setTractAcres(new Array(quantity).fill(0));
+      setPopupMenuVisible(true);
+    } else {
+      setPopupMenuVisible(false);
+    }
+  };
+
+  const handleAcresChange = (index, event) => {
+    const newTractAcres = [...tractAcres];
+    const acresValue = parseFloat(event.target.value);
+    if (!isNaN(acresValue) && acresValue >= 0) {
+      newTractAcres[index] = acresValue;
+      setTractAcres(newTractAcres);
+    } else {
+      alert("Please enter a valid number for acres.");
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -74,7 +100,7 @@ function NewAuction() {
     } catch (error) {
       console.error('Error:', error);
     }
-  }; 
+  };
 
     const handlePastAuctionSelect = async (event) => {
       const auctionId = event.target.value;
@@ -109,44 +135,7 @@ function NewAuction() {
       }
     };
 
- 
-  
-  const [tractAcres, setTractAcres] = useState([]);
-  const [popupMenuVisible, setPopupMenuVisible] = useState(false);
-
-  const handleTractQuantityChange = () => {
-    const quantity = parseInt(tractQuantityRef.current.value);
-    if (!isNaN(quantity) && quantity > 0) {
-      setTractAcres(new Array(quantity).fill(0));
-      setPopupMenuVisible(true); 
-    } else {
-      alert("Please enter a valid number of tracts.");
-    }
-  };
-
-   
-   const handleClosePopup = () => {
-    setPopupMenuVisible(false);
-    
-  };
-
-  const handleAcresChange = (index, event) => {
-    const newTractAcres = [...tractAcres];
-    const acresValue = parseFloat(event.target.value);
-    if (!isNaN(acresValue) && acresValue >= 0) {
-      newTractAcres[index] = acresValue;
-      setTractAcres(newTractAcres);
-    } else {
-      alert("Please enter a valid number for acres.");
-    }
-  };
-
-  const calculateTotalAcres = () => {
-    return tractAcres.reduce((total, acres) => total + (acres || 0), 0);
-  };
-
-
-  return <div className="NewAuction">
+    return <div className="NewAuction">
 
  <body>
     <div class="font-fira w-full flex justify-center mt-10">
@@ -176,27 +165,29 @@ function NewAuction() {
                 <input type="number" id="TractQuantity" name="TractQuantity" value={formData.TractQuantity} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
               </div>
 
-              {popupMenuVisible && (
-              <div className="popup-menu bg-gray-200 px-4 py-2">
-                <h3>Enter Acres for Each Tract</h3>
-                {tractAcres.map((acres, index) => (
-                  <div key={index}>
-                    <label>
-                      Tract {index + 1}: 
-                      <input 
-                        type="number" 
-                        value={acres || ''} 
-                        onChange={(event) => handleAcresChange(index, event)}
-                        min="1" 
-                        step="any" 
-                      />
-                    </label>
+              <div>
+{/* Popup for entering tract acres, conditionally rendered */}
+                {popupMenuVisible && (
+                  <div className="popup-menu bg-gray-200 px-4 py-2">
+                    <h3>Enter Acres for Each Tract</h3>
+                    {tractAcres.map((acre, index) => (
+                      <div key={index}>
+                        <label>
+                          Tract {index + 1}: 
+                          <input 
+                            type="number" 
+                            value={acre || ''} 
+                            onChange={(e) => handleAcresChange(index, e)}
+                            min="0"
+                          />
+                        </label>
+                      </div>
+                    ))}
+                    <button onClick={() => setPopupMenuVisible(false)} disabled={tractAcres.some(acres => acres <= 0)}>Done</button>
                   </div>
-                ))}
-                <button onClick={handleClosePopup} disabled={tractAcres.some(acres => acres <= 0 || acres === '')}>Done</button>
+                )}
               </div>
-            )}
-            
+
               <div class="w-3/6 ml-5">
                   <label for="UnitOfMeasurement" class="block tracking-wide mb-2  ml-5" >(U/M)</label>
                       <select id="UnitOfMeasurement" name="UnitOfMeasurement" value={formData.UnitOfMeasurement} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
@@ -335,7 +326,7 @@ function NewAuction() {
             <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
                 <input type="button" id="Create" name="Create" value="Start Auction" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
                 <input type="button" id="Save" name="Save" value="Save" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-              </div>        
+              </div>
             </form>
         </div>
     </body>

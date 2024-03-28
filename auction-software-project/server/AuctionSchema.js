@@ -6,7 +6,7 @@ const AuctionSchema = new mongoose.Schema({
   AuctionDate: Date,
   AuctionNumber: Number,
   TractQuantity: Number,
-  TractAcres: Number,
+  TractAcres: String,
   UnitOfMeasurement: String,
   NumOfDecPlaces: Number,
   CollectiveUnitOfMeasurement: String,
