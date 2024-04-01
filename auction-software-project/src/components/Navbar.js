@@ -12,7 +12,7 @@ import { IoIosHelpCircleOutline } from "react-icons/io";
 const Navbar = () => {
     return (
         <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
-            <div className='h-full overflow-y-auto py-5 px-3 bg-gray-50 dark:bg-gray-700'>         
+            <div className='h-full overflow-y-auto py-5 px-3 bg-red-700'>         
             <ul className="pl-0 space-y-1">
                     <li>
                         <NavLink to="/bid-board" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'>

@@ -22,7 +22,7 @@ function BidBoard() {
   }, []);
 
   return (
-          <div className="p-4 sm:ml-64 font-fira">
+          <div className="p-4 sm:ml-64 font-fira dark:bg-gray-800 h-screen">
             <table className="w-full text-sm text-white table-auto right-0">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
