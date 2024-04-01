@@ -8,12 +8,7 @@ const NewBid = ({ fetchBids }) => {
     const [bidAmount, setBidAmount] = useState('');
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
     const [show, setShow] = useState(false);
-    
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
-
-    
 
     // Reset form fields to their default states
     const clearForm = () => {
@@ -73,44 +68,26 @@ const NewBid = ({ fetchBids }) => {
 
     return (
 
-<>
-
-<button onClick={handleShow} className="bg-red-600 py-4 px-4 rounded text-white absolute bottom-10 right-10">
-  New Bid
-</button>
-
-<Modal show={show} onHide={handleClose}>
-        <Modal.Body>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="BidderNumber">Bidder Number</label>
-                <input type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)} />
-
-                <label htmlFor="Tracts">Tracts Being Bid On</label>
-                <input type="text" id="Tracts" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)} />
-
-                <label htmlFor="BidAmount">Bid Amount</label>
-                <input type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} />
-
-                <label htmlFor="BidType">Bid Type</label>
-                <select id="BidType" name="BidType" value={bidType} onChange={e => setBidType(e.target.value)}>
-                    <option value="InTotal">In Total</option>
-                    <option value="PerAcre">Per Acre</option>
-                </select>
-            </form>
-            <br></br>
-            <button type="submit" id="SubmitBid" name="SubmitBid" className="bg-red-600 py-2 px-4 rounded text-white mr-5">Submit Bid</button>
-            <button type="button" id="ClearForm" name="ClearForm" className="bg-gray-600 py-2 px-4 rounded text-white"onClick={clearForm}>Clear Form</button>
-
-  </Modal.Body>
-</Modal>
-</>
-
-
-
-
-
+<aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
+        <div className="bg-gray-800 p-4">
+            <label className="text-white">Bid amount</label>
+            <input className="w-full p-2"></input>
+            <hr></hr>
+            <labe className="text-white">Bid Number</labe>
+            <input className="w-full p-2"></input>
+            <hr></hr>
+            <ul className="grid grid-cols-3 p-0 gap-3">
+                <li>
+                    <input id="1" type="checkbox" value="" class="hidden peer" required=""></input>
+                    <label for="1" className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                        <div className="block text-center items-center w-full">1</div>
+                    </label>
+                </li>
+            </ul>
+            <button className="bg-red-700 text-white w-full p-2">Add Bid</button>
+            </div>
+        </aside>
     );
 }
-
 
 export default NewBid; 

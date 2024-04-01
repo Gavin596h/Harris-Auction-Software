@@ -23,7 +23,7 @@ function BidBoard() {
 
   return (
           <div className="p-4 sm:ml-64 font-fira">
-            <table className="w-full text-sm text-gray-500 dark:text-white table-auto right-0">
+            <table className="w-full text-sm text-white table-auto right-0">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400 ">
@@ -48,7 +48,7 @@ function BidBoard() {
                 </thead>
                 <tbody>
                 {bids.map((bid, index) => (
-                    <tr key={index} className="dark:bg-black">
+                    <tr key={index} className="bg-black">
                         <td className="border-gray-400 border-r-2 px-6 py-4">{bid.Bidder}</td>
                         <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount}</td>
                         <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead}</td>
@@ -59,7 +59,6 @@ function BidBoard() {
                 ))}
                 </tbody>
             </table>
-            <NewBid></NewBid>
         </div>
   );
 }
