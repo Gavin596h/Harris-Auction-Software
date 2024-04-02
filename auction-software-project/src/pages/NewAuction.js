@@ -27,6 +27,31 @@ function NewAuction() {
     PercentOrAmount: 0, // Default value
   });
 
+  const handleResetDefaults = () => {
+    setFormData({
+      AuctionName: '',
+      AuctionDate: '',
+      AuctionNumber: 0,
+      TractQuantity: '',
+      TractAcres: [],
+      UnitOfMeasurement: 'Acre',
+      NumOfDecPlaces: '',
+      CollectiveUnitOfMeasurement: 'Tract',
+      BidMethod: 'InTotal',
+      HighColumn: 'High',
+      PrintOrNot: false,
+      WarnOnCombination: false,
+      BidQueryCombination: false,
+      BuyersPrem: false,
+      BuyersPremPercent: 0,
+      DepositType: 'None',
+      PercentOrAmount: 0,
+    });
+
+    setTractAcres([]);
+    setPopupMenuVisible(false);
+  };
+
   const [pastAuctions, setPastAuctions] = useState([]);
   const [tractAcres, setTractAcres] = useState([]);
   const [popupMenuVisible, setPopupMenuVisible] = useState(false);
@@ -183,7 +208,7 @@ function NewAuction() {
               <div>
 {/* Popup for entering tract acres, conditionally rendered */}
                 {popupMenuVisible && (
-                  <div className="popup-menu bg-gray-200 px-4 py-2">
+                  <div className="absolute bg-gray-200 border border-gray-300 rounded p-4 mt-2 z-10">
                     <h3>Enter Acres for Each Tract</h3>
                     {tractAcres.map((acre, index) => (
                       <div key={index}>
@@ -304,7 +329,7 @@ function NewAuction() {
           <div class="flex flex-wrap mb-6 md:mb-0 text-white">
             <input type="button" id="CreateDuplicate" name="CreateDuplicate" value="Create Duplicate" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
             <input type="button" id="EventLog" name="EventLog" value="Event Log" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            <input type="button" id="ResetToDefaults" name="ResetToDefaults" value="Reset To Defaults" onClick={handleResetDefaults} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
             <input type="button" id="ScreenTitle" name="ScreenTitle" value="Screen Title" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-red-500 rounded dark:hover:bg-red-600 cursor-pointer"></input><br/>
           </div>
           <hr/>
