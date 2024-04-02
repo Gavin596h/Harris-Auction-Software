@@ -4,7 +4,13 @@ const Auction = require('../server/AuctionSchema');
 const routes = express.Router();
 
 router.post('/AuctionCRUD', async (req, res) => {
-    console.log('Received data on server:', req.body);
+    const { AuctionNumber } = req.body;
+    const existingAuction = await Auction.findOne({ AuctionNumber });
+
+    if (existingAuction) {
+      return res.status(400).json({ error: 'Auction number already exists' });
+    }
+
     try {
       const auctionInstance = new Auction(req.body);
       await auctionInstance.save();

@@ -5,6 +5,7 @@ const BidBoard = require('./BidSchema');
 
 // Create a new bid and update all the previous bids
 router.post('/bids', async (req, res) => {
+    console.log(req.body);
     const session = await mongoose.startSession();
     try {
         await session.startTransaction();
@@ -59,10 +60,15 @@ router.post('/bids', async (req, res) => {
     }
 });
 
-// Get all bids
+// Get all bids with the right AuctionNumber
 router.get('/bids', async (req, res) => {
+    const { auctionNumber } = req.query; // Accept auctionNumber as a query param
     try {
-        const bids = await BidBoard.find();
+        let query = {};
+        if (auctionNumber) {
+            query.AuctionNumber = auctionNumber; // Filter bids by auction number
+        }
+        const bids = await BidBoard.find(query);
         res.json(bids);
     } catch (error) {
         res.status(500).json({ message: error.message });

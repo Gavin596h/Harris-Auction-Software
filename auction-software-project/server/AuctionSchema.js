@@ -11,7 +11,6 @@ const AuctionSchema = new mongoose.Schema({
   NumOfDecPlaces: Number,
   CollectiveUnitOfMeasurement: String,
   BidMethod: String,
-  NumberOfLeaderBoards: Number,
   HighColumn: String,
   PrintOrNot: Boolean,
   WarnOnCombination: Boolean,

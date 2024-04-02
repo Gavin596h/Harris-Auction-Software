@@ -3,20 +3,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import { useState,useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 function NewAuction() {
 
   const [formData, setFormData] = useState({
     AuctionName: '',
     AuctionDate: '',
-    AuctionNumber: '',
+    AuctionNumber: 0,
     TractQuantity: '',
     TractAcres: [],
     UnitOfMeasurement: 'Acre', // Default value
     NumOfDecPlaces: '',
     CollectiveUnitOfMeasurement: 'Tract', // Default value
     BidMethod: 'InTotal', // Default value
-    NumberOfLeaderBoards: '',
     HighColumn: 'High', // Defaul value
     PrintOrNot: false,
     WarnOnCombination: false,
@@ -30,6 +30,7 @@ function NewAuction() {
   const [pastAuctions, setPastAuctions] = useState([]);
   const [tractAcres, setTractAcres] = useState([]);
   const [popupMenuVisible, setPopupMenuVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPastAuctions = async () => {
@@ -86,11 +87,14 @@ function NewAuction() {
     const updatedFormData = {
       ...formData,
       TractAcres: tractAcres,
-      AuctionNumber: parseInt(formData.AuctionNumber, 10),
+      AuctionNumber: formData.AuctionNumber,
       TractQuantity: parseInt(formData.TractQuantity, 10),
       BuyersPremPercent: parseFloat(formData.BuyersPremPercent),
       PercentOrAmount: parseFloat(formData.PercentOrAmount),
     };
+
+    console.log('Auction submitted successfully');
+    localStorage.setItem('currentAuctionNumber', updatedFormData.AuctionNumber);
 
     try {
       const response = await fetch('http://localhost:3001/AuctionCRUD', {
@@ -100,8 +104,15 @@ function NewAuction() {
         },
         body: JSON.stringify(updatedFormData),
       });
+  
       if (!response.ok) throw new Error('Submission failed');
       console.log('Auction submitted successfully');
+  
+      // Save to localStorage if needed
+      localStorage.setItem('currentAuctionNumber', updatedFormData.AuctionNumber);
+  
+      // Navigate to BidBoard
+      navigate("/bid-board");
     } catch (error) {
       console.error('Error:', error);
     }
@@ -119,13 +130,12 @@ function NewAuction() {
           ...formData,
           AuctionName: selectedAuction.AuctionName || '',
           AuctionDate: selectedAuction.AuctionDate ? selectedAuction.AuctionDate.split('T')[0] : '',
-          AuctionNumber: selectedAuction.AuctionNumber.toString() || '', // Ensure this is a string for the input
+          AuctionNumber: selectedAuction.AuctionNumber || 0, // Ensure this is a string for the input
           TractQuantity: selectedAuction.TractQuantity.toString() || '', // Convert to string if necessary
           UnitOfMeasurement: selectedAuction.UnitOfMeasurement || 'Acre',
           NumOfDecPlaces: selectedAuction.NumOfDecPlaces.toString() || '', // Convert to string
           CollectiveUnitOfMeasurement: selectedAuction.CollectiveUnitOfMeasurement || 'Tract',
           BidMethod: selectedAuction.BidMethod || 'InTotal',
-          NumberOfLeaderBoards: selectedAuction.NumberOfLeaderBoards.toString() || '',
           HighColumn: selectedAuction.HighColumn || 'High',
           PrintOrNot: !!selectedAuction.PrintOrNot,
           WarnOnCombination: !!selectedAuction.WarnOnCombination,
@@ -329,7 +339,7 @@ function NewAuction() {
            
             <hr/>
             <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
-                <input type="button" id="Create" name="Create" value="Start Auction" class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
+                <input type="button" id="Create" name="Create" value="Start Auction" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
                 <input type="button" id="Save" name="Save" value="Save" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
               </div>
             </form>

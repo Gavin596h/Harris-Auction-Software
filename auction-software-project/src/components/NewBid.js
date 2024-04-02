@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const NewBid = ({ fetchBids }) => {
+const NewBid = ({ fetchBids, auctionNumber }) => {
     const [bidderNumber, setBidderNumber] = useState('');
     const [tracts, setTracts] = useState('');
     const [bidAmount, setBidAmount] = useState('');
@@ -23,10 +23,13 @@ const NewBid = ({ fetchBids }) => {
         const toLead = calculateToLead(); // This needs actual implementation
         const perAcre = calculatePerAcre(); // This too
 
+        console.log("Submitting bid for auctionNumber:", auctionNumber);
+
         const bid = {
-            Bidder: bidderNumber, 
+            AuctionNumber: auctionNumber,
+            Bidder: parseInt(bidderNumber, 10), 
             Tract: tracts, 
-            BidAmount: bidAmount,
+            BidAmount: parseInt(bidAmount),
             ToLead: toLead,
             PerAcre: perAcre,
             // Include any other fields required by your schema
