@@ -211,7 +211,8 @@ function NewAuction() {
                   <div className="absolute bg-gray-200 border border-gray-300 rounded p-4 mt-2 z-10">
                     <h3>Enter Acres for Each Tract</h3>
                     {tractAcres.map((acre, index) => (
-                      <div key={index}>
+                      <div class="y-4"key={index}>
+                        <br></br>
                         <label>
                           Tract {index + 1}: 
                           <input 

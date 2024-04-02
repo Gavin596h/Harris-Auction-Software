@@ -18,7 +18,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Here, calculate the "toLead" and "perAcre" as necessary before sending
         const toLead = calculateToLead(); // This needs actual implementation
         const perAcre = calculatePerAcre(); // This too
@@ -49,9 +49,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             }
 
             const createdBid = await response.json();
-
-            // Here you might want to add the new bid to local state to update UI
-            fetchBids(createdBid);
+            fetchBids(auctionNumber); // Refresh the bid list
             clearForm();
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
