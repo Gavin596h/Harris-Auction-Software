@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const BidBoard = require('./BidSchema');
 
+
+
 // Create a new bid and update all the previous bids
 router.post('/bids', async (req, res) => {
     console.log(req.body);
@@ -110,15 +112,45 @@ router.patch('/bids/:id', async (req, res) => {
 
 // Delete a bid
 router.delete('/bids/:id', async (req, res) => {
+    let session;
     try {
-        const bid = await BidBoard.findById(req.params.id);
-        if (bid == null) {
+        session = await mongoose.startSession();
+        await session.startTransaction();
+        
+        const bidToDelete = await BidBoard.findById(req.params.id).session(session);
+        if (!bidToDelete) {
+            await session.abortTransaction();
             return res.status(404).json({ message: 'Cannot find bid' });
         }
-        await bid.remove();
-        res.json({ message: 'Deleted Bid' });
+
+        // Remember the AuctionNumber and Tract of the deleted bid
+        const { AuctionNumber, Tract } = bidToDelete;
+        
+        // Proceed to delete the bid
+        await BidBoard.deleteOne({ _id: req.params.id }).session(session);
+
+        // Find the next highest bid for the same AuctionNumber and Tract
+        const nextHighestBids = await BidBoard.find({ AuctionNumber, Tract })
+            .sort({ BidAmount: -1 })
+            .session(session);
+
+        // If there are remaining bids, update the highest bid flag
+        if (nextHighestBids.length > 0) {
+            // Ensure all bids are marked as not high first to avoid multiple high flags
+            await BidBoard.updateMany({ AuctionNumber, Tract }, { $set: { High: false } }).session(session);
+            
+            // Mark the highest bid as such
+            await BidBoard.findByIdAndUpdate(nextHighestBids[0]._id, { $set: { High: true } }).session(session);
+        }
+
+        await session.commitTransaction();
+        res.json({ message: 'Deleted Bid and updated highest bid' });
     } catch (error) {
+        if (session && session.inTransaction()) await session.abortTransaction();
+        console.error(error); // For debugging
         res.status(500).json({ message: error.message });
+    } finally {
+        if (session) session.endSession();
     }
 });
 
