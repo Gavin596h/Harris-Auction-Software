@@ -19,6 +19,8 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const TractNumbers = tracts.split(',').map(Number);
+
         // Here, calculate the "toLead" and "perAcre" as necessary before sending
         const toLead = calculateToLead(); // This needs actual implementation
         const perAcre = calculatePerAcre(); // This too
@@ -28,7 +30,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
         const bid = {
             AuctionNumber: auctionNumber,
             Bidder: parseInt(bidderNumber, 10), 
-            Tract: tracts, 
+            Tract: TractNumbers, 
             BidAmount: parseInt(bidAmount),
             ToLead: toLead,
             PerAcre: perAcre,

@@ -7,50 +7,55 @@ const BidBoard = require('./BidSchema');
 
 // Create a new bid and update all the previous bids
 router.post('/bids', async (req, res) => {
-    console.log(req.body);
     const session = await mongoose.startSession();
     try {
         await session.startTransaction();
-        const { Tract, BidAmount, AuctionNumber } = req.body;
-        const tractNumbers = Tract.split(',').map(t => t.trim());
+        const { Tract: inputTracts, BidAmount, AuctionNumber } = req.body;
 
-        let sumHighestBids = 0;
-        let highestBidsInfo = [];
+        // Normalize the input tracts to ensure consistency
+        const normalizedInputTracts = inputTracts.map(Number).sort((a, b) => a - b);
 
-        // Ensure calculations are scoped to the current AuctionNumber
-        for (let tract of tractNumbers) {
-            let highestBidForTract = await BidBoard.findOne({
-                Tract: { $regex: `\\b${tract}\\b`, $options: 'i' },
-                AuctionNumber: AuctionNumber // Scope to the current auction
-            })
-            .sort('-BidAmount')
-            .session(session);
+        // Fetch all bids for the auction number and tracts involved
+        const existingBids = await BidBoard.find({
+            AuctionNumber,
+            Tract: { $in: normalizedInputTracts }
+        }).session(session);
 
-            if (highestBidForTract) {
-                sumHighestBids += highestBidForTract.BidAmount;
-                highestBidsInfo.push({ tract: tract, amount: highestBidForTract.BidAmount, id: highestBidForTract._id });
+        let highestBidAmount = 0;
+
+        existingBids.forEach(bid => {
+            const isRelevantBid = bid.Tract.some(tract => normalizedInputTracts.includes(tract));
+            if (isRelevantBid && bid.BidAmount > highestBidAmount) {
+                highestBidAmount = bid.BidAmount;
             }
-        }
+        });
 
-        let requiredMinimumBid = sumHighestBids + 50;
-
-        if (BidAmount <= requiredMinimumBid) {
+        // The new bid must be higher than the highest existing bid amount for the involved tracts
+        if (BidAmount <= highestBidAmount) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({
-                message: "Bid not high enough.",
-                requiredMinimumBid: requiredMinimumBid,
+                message: "Bid not high enough. Must be higher than the highest bid on any of the involved tracts.",
+                highestBidAmount: highestBidAmount,
                 yourBid: BidAmount
             });
         }
 
-        // Mark previous high bids within the same AuctionNumber as no longer high
-        await Promise.all(highestBidsInfo.map(async (bidInfo) => {
-            await BidBoard.findByIdAndUpdate(bidInfo.id, { $set: { High: false } }, { session });
-        }));
+        // Update the 'High' status of all previously highest bids for the involved tracts
+        await BidBoard.updateMany(
+            { AuctionNumber, Tract: { $in: normalizedInputTracts }, High: true },
+            { $set: { High: false } },
+            { session }
+        );
 
-        // Insert the new bid as high within the current AuctionNumber
-        const newBid = new BidBoard({ ...req.body, High: true });
+        // Insert the new bid as high within the current AuctionNumber and involved tracts
+        const newBid = new BidBoard({
+            AuctionNumber,
+            Bidder: parseInt(req.body.Bidder, 10),
+            Tract: normalizedInputTracts,
+            BidAmount,
+            High: true
+        });
         await newBid.save({ session });
 
         await session.commitTransaction();
