@@ -1,5 +1,3 @@
-import NewAuction from '../pages/NewAuction';
-import Home from '../pages/Home';
 import { NavLink } from 'react-router-dom';
 import { FaRegCalendarAlt } from "react-icons/fa";
 import {RiAuctionFill} from 'react-icons/ri'

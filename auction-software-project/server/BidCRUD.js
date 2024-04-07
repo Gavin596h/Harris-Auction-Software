@@ -3,23 +3,28 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const BidBoard = require('./BidSchema');
 
+
+
 // Create a new bid and update all the previous bids
 router.post('/bids', async (req, res) => {
+    console.log(req.body);
     const session = await mongoose.startSession();
     try {
         await session.startTransaction();
-        const { Tract, BidAmount } = req.body;
+        const { Tract, BidAmount, AuctionNumber } = req.body;
         const tractNumbers = Tract.split(',').map(t => t.trim());
 
-        // Initialize variables to hold the sum of the highest bids and their IDs
         let sumHighestBids = 0;
         let highestBidsInfo = [];
 
-        // Iterate over each tract to find the highest bid
+        // Ensure calculations are scoped to the current AuctionNumber
         for (let tract of tractNumbers) {
-            let highestBidForTract = await BidBoard.findOne({ Tract: { $regex: `\\b${tract}\\b`, $options: 'i' } })
-                                                    .sort('-BidAmount')
-                                                    .session(session);
+            let highestBidForTract = await BidBoard.findOne({
+                Tract: { $regex: `\\b${tract}\\b`, $options: 'i' },
+                AuctionNumber: AuctionNumber // Scope to the current auction
+            })
+            .sort('-BidAmount')
+            .session(session);
 
             if (highestBidForTract) {
                 sumHighestBids += highestBidForTract.BidAmount;
@@ -27,25 +32,24 @@ router.post('/bids', async (req, res) => {
             }
         }
 
-        // Determine the minimum required bid amount to become the new highest bid
-        let requiredMinimumBid = sumHighestBids + 50; // Sum of highest bids + $50
+        let requiredMinimumBid = sumHighestBids + 50;
 
         if (BidAmount <= requiredMinimumBid) {
             await session.abortTransaction();
             session.endSession();
-            return res.status(400).json({ 
-                message: "Bid not high enough.", 
-                requiredMinimumBid: requiredMinimumBid, 
-                yourBid: BidAmount 
+            return res.status(400).json({
+                message: "Bid not high enough.",
+                requiredMinimumBid: requiredMinimumBid,
+                yourBid: BidAmount
             });
         }
 
-        // Before marking the new bid as 'High', reset 'High' status for the previously highest bids
+        // Mark previous high bids within the same AuctionNumber as no longer high
         await Promise.all(highestBidsInfo.map(async (bidInfo) => {
             await BidBoard.findByIdAndUpdate(bidInfo.id, { $set: { High: false } }, { session });
         }));
 
-        // Save the new highest bid
+        // Insert the new bid as high within the current AuctionNumber
         const newBid = new BidBoard({ ...req.body, High: true });
         await newBid.save({ session });
 
@@ -59,10 +63,15 @@ router.post('/bids', async (req, res) => {
     }
 });
 
-// Get all bids
+// Get all bids with the right AuctionNumber
 router.get('/bids', async (req, res) => {
+    const { auctionNumber } = req.query; // Accept auctionNumber as a query param
     try {
-        const bids = await BidBoard.find();
+        let query = {};
+        if (auctionNumber) {
+            query.AuctionNumber = auctionNumber; // Filter bids by auction number
+        }
+        const bids = await BidBoard.find(query);
         res.json(bids);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -103,15 +112,45 @@ router.patch('/bids/:id', async (req, res) => {
 
 // Delete a bid
 router.delete('/bids/:id', async (req, res) => {
+    let session;
     try {
-        const bid = await BidBoard.findById(req.params.id);
-        if (bid == null) {
+        session = await mongoose.startSession();
+        await session.startTransaction();
+        
+        const bidToDelete = await BidBoard.findById(req.params.id).session(session);
+        if (!bidToDelete) {
+            await session.abortTransaction();
             return res.status(404).json({ message: 'Cannot find bid' });
         }
-        await bid.remove();
-        res.json({ message: 'Deleted Bid' });
+
+        // Remember the AuctionNumber and Tract of the deleted bid
+        const { AuctionNumber, Tract } = bidToDelete;
+        
+        // Proceed to delete the bid
+        await BidBoard.deleteOne({ _id: req.params.id }).session(session);
+
+        // Find the next highest bid for the same AuctionNumber and Tract
+        const nextHighestBids = await BidBoard.find({ AuctionNumber, Tract })
+            .sort({ BidAmount: -1 })
+            .session(session);
+
+        // If there are remaining bids, update the highest bid flag
+        if (nextHighestBids.length > 0) {
+            // Ensure all bids are marked as not high first to avoid multiple high flags
+            await BidBoard.updateMany({ AuctionNumber, Tract }, { $set: { High: false } }).session(session);
+            
+            // Mark the highest bid as such
+            await BidBoard.findByIdAndUpdate(nextHighestBids[0]._id, { $set: { High: true } }).session(session);
+        }
+
+        await session.commitTransaction();
+        res.json({ message: 'Deleted Bid and updated highest bid' });
     } catch (error) {
+        if (session && session.inTransaction()) await session.abortTransaction();
+        console.error(error); // For debugging
         res.status(500).json({ message: error.message });
+    } finally {
+        if (session) session.endSession();
     }
 });
 
