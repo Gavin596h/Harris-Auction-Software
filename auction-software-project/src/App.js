@@ -16,8 +16,8 @@ function App() {
         {/* <header>
           <GiHamburgerMenu onClick={() => setShowNav(!showNav)}/>
         </header> */}
-
         <Navbar/>
+
         <Routes>
           <Route path="/bid-board" exact={true} element={<BidBoard/>}/>
           <Route path="/new-auction" exact={true} element={<NewAuction/>}/>
