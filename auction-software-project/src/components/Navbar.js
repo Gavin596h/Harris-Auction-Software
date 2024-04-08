@@ -72,10 +72,9 @@ const Navbar = () => {
                     </label>
                 </li>
             </ul>
-            <button className="bg-red-700 text-white w-full p-2">Add Bid</button>
-            </div>
+v            </div>
 
-                    </div>
+            </div>
 
 
         </aside>

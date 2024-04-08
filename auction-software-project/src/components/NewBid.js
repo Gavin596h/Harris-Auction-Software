@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Report from './Report';
 
 const NewBid = ({ fetchBids }) => {
     const [bidderNumber, setBidderNumber] = useState('');
@@ -86,6 +87,7 @@ const NewBid = ({ fetchBids }) => {
             </ul>
             <button className="bg-red-700 text-white w-full p-2">Add Bid</button>
             </div>
+        <Report></Report>
         </aside>
     );
 }
