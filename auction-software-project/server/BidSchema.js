@@ -11,7 +11,7 @@ const BidBoardSchema = new mongoose.Schema({
   PerAcre: Number,
   AcreCount: Number,
   High: Boolean,
-  Tract: String,
+  Tract: [Number],
 });
 
 const BidBoard = mongoose.model('BidBoard', BidBoardSchema);

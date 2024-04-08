@@ -5,9 +5,12 @@ import Report from '../components/Report';
 function BidBoard() {
   const [bids, setBids] = useState([]);
 
-  const fetchBids = async () => {
+  const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+
+  const fetchBids = async (auctionNumber) => {
     try {
-      const response = await fetch('http://localhost:3001/api/bids');
+      const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -19,7 +22,9 @@ function BidBoard() {
   };
 
   useEffect(() => {
-    fetchBids();
+    const auctionNumber = localStorage.getItem('currentAuctionNumber');
+    setCurrentAuctionNumber(auctionNumber);
+    fetchBids(auctionNumber);
   }, []);
 
   return (
@@ -61,6 +66,7 @@ function BidBoard() {
                 </tbody>
             </table>
             {/* <Report ref={bids}></Report> */}
+            <NewBid fetchBids={fetchBids} auctionNumber={currentAuctionNumber}></NewBid>
         </div>
   );
 }
