@@ -5,6 +5,7 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { MdHome, MdOutlineDashboard } from "react-icons/md";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import NewBid from './NewBid';
 
 
 const Navbar = () => {
@@ -35,6 +36,7 @@ const Navbar = () => {
                         <span class="ml-3">Calandar</span>
                         </a>
                     </li>
+                    <NewBid></NewBid>
                     </ul>
             </div>
         </aside>

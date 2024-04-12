@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Report from './Report';
+import BidBoard from '../pages/BidBoard';
 
 const NewBid = ({ fetchBids, auctionNumber }) => {
     const [bidderNumber, setBidderNumber] = useState('');
@@ -10,7 +11,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
     const [show, setShow] = useState(false);
     const [recentBidId, setRecentBidId] = useState('');
-    
+    const [tractAmount, setTractAmount] = useState(null);
 
     // Reset form fields to their default states
     const clearForm = () => {
@@ -95,9 +96,34 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
         }
     };
 
+    useEffect(() => {
+        const currentAuctionNumber = localStorage.getItem('currentAuctionNumber');
+        localStorage.getItem('')
+        
+            const fetchTract = async (auctionNumber) => {
+                try {
+                const url = `http://localhost:3001/api/auctionNumber=${currentAuctionNumber}`;
+                const response = await BidBoard.find
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log("hello what")
+                console.log(data)
+                setTractAmount(data);
+                } catch (error) {
+                console.error('There was an error fetching the bids:', error);
+                }
+            };
+            fetchTract();
+      }, []);
+
+
+
     return (
 <>
-<aside className='font-fira fixed h-screen bottom-0 left-0 bg-white z-40 w-64 '>
+<br></br>
+<div className='font-fire'>
     <form onSubmit={handleSubmit}>
         <div className="bg-gray-800 p-4">
             <label htmlFor="BidderNumber" className="text-white">Bid Numer</label>
@@ -108,7 +134,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
 
-                {/* {fetchBids.map((tract) => (
+                {/* {auctionNum.Tract.map((tract) => (
                     <li>
                         <input id={tract.value} type="checkbox" class="hidden peer" required="" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)}></input>
                         <label for={tract.value} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
@@ -119,15 +145,15 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
 
             </ul>
             <label htmlFor="BidType"> Bid Type </label>
-            <select id="BidType" name="BidType" value={bidType} onChange={e => setBidType(e.target.value)}>
+            <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>
                 <option value="InTotal">In Total</option>
                 <option value="PerAcre">Per Acre</option>
             </select>
-                <button className="bg-red-700 text-white w-full p-2"  type="submit" id="SubmitBid" name="SubmitBid">Add Bid</button>
-                <button  className="bg-gray-400 text-white w-full p-2" type="button" id="ClearForm" name="ClearForm" onClick={clearForm}>Clear Form</button>
+                <button className="bg-red-700 text-white w-full p-2 mb-2"  type="submit" id="SubmitBid" name="SubmitBid">Add Bid</button>
+                <button  className="bg-gray-400 text-white w-full p-2 mb-2" type="button" id="ClearForm" name="ClearForm" onClick={clearForm}>Clear Form</button>
             </div>
             </form>
-        </aside>
+        </div>
       
 
 

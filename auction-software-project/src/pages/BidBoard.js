@@ -9,7 +9,7 @@ function BidBoard() {
 
   const fetchBids = async (auctionNumber) => {
     try {
-      const url = `http://localhost:3001/api/bids?auctionNumber=${9}`;
+      const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -65,7 +65,6 @@ function BidBoard() {
                 ))}
                 </tbody>
             </table>
-            <Report></Report> 
             <NewBid fetchBids={fetchBids} auctionNumber={currentAuctionNumber}></NewBid>
         </div>
   );
