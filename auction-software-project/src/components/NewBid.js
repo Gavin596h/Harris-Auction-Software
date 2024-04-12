@@ -96,8 +96,8 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
     };
 
     return (
-
-<aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
+        <>
+    <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
         <div className="bg-gray-800 p-4">
             <label className="text-white">Bid amount</label>
             <input className="w-full p-2"></input>
@@ -115,7 +115,6 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             </ul>
             <button className="bg-red-700 text-white w-full p-2">Add Bid</button>
             </div>
-        <Report></Report>
         </aside>
       
         <form onSubmit={handleSubmit}>
@@ -138,6 +137,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             <button type="button" id="ClearForm" name="ClearForm" onClick={clearForm}> Clear Form </button>
             <button type="button" id="DeleteRecent" name="DeleteRecent" onClick={handleDeleteRecentBid}> Delete </button>
         </form>
+        </>
     );
 }
 
