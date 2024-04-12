@@ -97,7 +97,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
 
     return (
 <>
-<aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
+<aside className='font-fira fixed h-screen bottom-0 left-0 bg-white z-40 w-64 '>
     <form onSubmit={handleSubmit}>
         <div className="bg-gray-800 p-4">
             <label htmlFor="BidderNumber" className="text-white">Bid Numer</label>
@@ -108,14 +108,14 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
 
-                {/* {auctionNumber.Tract?.map((tract) => (
+                {/* {fetchBids.map((tract) => (
                     <li>
                         <input id={tract.value} type="checkbox" class="hidden peer" required="" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)}></input>
                         <label for={tract.value} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
                             <div className="block text-center items-center w-full">{tract.value}</div>
                         </label>
                     </li>
-                ))} */}
+                ))}  */}
 
             </ul>
             <label htmlFor="BidType"> Bid Type </label>

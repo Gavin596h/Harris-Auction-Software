@@ -1,5 +1,6 @@
 import NewBid from '../components/NewBid';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
 
@@ -39,7 +40,7 @@ const Home = () => {
                     <div className="w-6/12">
                         <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
                         <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Start</button>
+                        <Link to="/bid-board"><button className="m-2 p-3 bg-red-700 text-white">Start</button></Link>
                     </div>
                 </li>
                 )}
