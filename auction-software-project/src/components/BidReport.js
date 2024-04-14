@@ -3,7 +3,7 @@ import {Document, Page, Text, View, StyleSheet} from '@react-pdf/renderer'
 
 // Create styles
 
-function Report() {
+function BidReport() {
 const styles = StyleSheet.create({
     page: {
       flexDirection: 'row',
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
   const fetchBids = async (auctionNumber) => {
     try {
-      const url = `http://localhost:3001/api/bids?auctionNumber=${9}`;
+      const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -41,7 +41,27 @@ const styles = StyleSheet.create({
   }, []);
 
 
-    
+    return (
+      <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text>Current Bid Board</Text>
+        </View>
+          {bids.map((bid) => (
+            <View>
+              <Text>{bid.Bidder}</Text>
+              <Text>{bid.BidAmount}</Text>
+              <Text>{bid.ToLead}</Text>
+              <Text>{bid.PerAcre}</Text>
+              <Text>{bid.High ? 'Yes' : 'No'}</Text>
+              <Text>{bid.Bidder}</Text>
+              <Text>{bid.Tract}</Text> 
+          </View>
+         ))}
+      </Page>
+    </Document>
+
+  );
 }
 
-export default Report;
+export default BidReport;

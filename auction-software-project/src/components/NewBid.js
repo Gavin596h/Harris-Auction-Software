@@ -95,28 +95,29 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             console.error('There was a problem with the delete operation:', error);
         }
     };
-
-    useEffect(() => {
-        const currentAuctionNumber = localStorage.getItem('currentAuctionNumber');
-        localStorage.getItem('')
         
             const fetchTract = async (auctionNumber) => {
                 try {
-                const url = `http://localhost:3001/api/auctionNumber=${currentAuctionNumber}`;
-                const response = await BidBoard.find
+                const url = `http://localhost:3001/api/auctionNumber=${auctionNumber}`;
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
                 console.log("hello what")
                 console.log(data)
-                setTractAmount(data);
+                setTractAmount(data.Tract);
                 } catch (error) {
                 console.error('There was an error fetching the bids:', error);
                 }
-            };
-            fetchTract();
+      };
+
+      useEffect(() => {
+        const auctionNumber = localStorage.getItem('currentAuctionNumber');
+        setTractAmount(auctionNumber);
+        fetchTract(auctionNumber);
       }, []);
+
 
 
 
@@ -149,7 +150,7 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
                 <option value="InTotal">In Total</option>
                 <option value="PerAcre">Per Acre</option>
             </select>
-                <button className="bg-red-700 text-white w-full p-2 mb-2"  type="submit" id="SubmitBid" name="SubmitBid">Add Bid</button>
+                <button className="bg-red-700 text-white w-full p-2 mb-2"  type="submit" id="SubmitBid" name="SubmitBid" onClick={handleSubmit}>Add Bid</button>
                 <button  className="bg-gray-400 text-white w-full p-2 mb-2" type="button" id="ClearForm" name="ClearForm" onClick={clearForm}>Clear Form</button>
             </div>
             </form>
