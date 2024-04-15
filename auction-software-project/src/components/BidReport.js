@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   const [bids, setBids] = useState([]);
 
   const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+  const [currentAuction, setAuction] = useState(null);
 
   const fetchBids = async (auctionNumber) => {
     try {
@@ -34,10 +35,25 @@ const styles = StyleSheet.create({
     }
   };
 
+  const fetchAuction = async (auctionNumber) => {
+    try {
+      const url = `http://localhost:3001/api/auctionNumber=${auctionNumber}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setAuction(data);
+    } catch (error) {
+      console.error('There was an error fetching the bids:', error);
+    }
+  };
+
   useEffect(() => {
     const auctionNumber = localStorage.getItem('currentAuctionNumber');
     setCurrentAuctionNumber(auctionNumber);
     fetchBids(auctionNumber);
+    fetchAuction(auctionNumber);
   }, []);
 
 

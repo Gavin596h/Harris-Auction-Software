@@ -25,9 +25,12 @@ const Home = () => {
         fetchPastAuctions();
       }, []);
     
-      const setAuctionNum = (num) => {
-        localStorage.setItem('currentAuctionNumber', num);
-        console.log(num);
+      const setAuctionNum = (a) => {
+        localStorage.setItem('currentAuctionNumber', a.AuctionNumber);
+        console.log(a)
+        localStorage.setItem('selectedAuction', a.AuctionName);
+        localStorage.setItem('tractNum', a.TractQuantity)
+        console.log(a.TractQuantity);
       }
 
     return    (
@@ -44,8 +47,13 @@ const Home = () => {
                     <div className="w-6/12">
                         <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
                         <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
-                        <Link to="/bid-board"><button className="m-2 p-3 bg-red-700 text-white" key={auction.AuctionNumber} onClick={setAuctionNum.bind(this, auction.AuctionNumber)}>Start</button></Link>
-                    </div>
+                        <Link to={{
+                          pathname: "/bid-board",
+                          state: {selectedAution: auction}
+                            
+                        }}>
+                          <button className="m-2 p-3 bg-red-700 text-white" key={auction.AuctionNumber} onClick={setAuctionNum.bind(this, auction)}>Start</button>
+                        </Link>                    </div>
                 </li>
                 )}
             </ul>

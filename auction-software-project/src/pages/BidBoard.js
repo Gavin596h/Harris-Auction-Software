@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef, Props } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import NewBid from '../components/NewBid';
 import Report from '../components/Report';
 import ReactToPrint from "react-to-print";
-
+import { useLocation } from "react-router-dom";
 
 function BidBoard() {
   const [bids, setBids] = useState([]);
-
   const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+  let location = useLocation();
+  console.log(location);
+  const [currentAuction, setCurrentAuction] = useState();
+
   const ref = useRef();
 
   const fetchBids = async (auctionNumber) => {
@@ -24,10 +27,16 @@ function BidBoard() {
     }
   };
 
+
   useEffect(() => {
     const auctionNumber = localStorage.getItem('currentAuctionNumber');
     setCurrentAuctionNumber(auctionNumber);
-    fetchBids(auctionNumber);
+    fetchBids(auctionNumber)
+    console.log(location);
+    const a = localStorage.getItem('selectedAuction')
+    setCurrentAuction(a);
+    console.log(currentAuction)
+    console.log("here I am");
   }, []);
 
   
@@ -35,6 +44,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
   
   return(
     <div className="p-4 font-fira h-screen" ref={ref}>
+    <h2 className='text-black'>{currentAuction}</h2>
     <table className="w-full text-sm text-black table-auto right-0">
         <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:text-white">
             <tr>
@@ -84,7 +94,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
   return (
     <>
           <div className="p-4 sm:ml-64 font-fira dark:bg-gray-800 h-screen">
-            <h2>Testing name</h2>
+            <h2 className='text-white'>{currentAuction}</h2>
             <table className="w-full text-sm text-white right-0 border-collapse	">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
@@ -122,14 +132,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
 
                 </tbody>
             </table>
-            <ReactToPrint
-              content={() => ref.current}
-              trigger={() => (
-                  <button>
-                        Print
-                  </button>
-              )}
-            />        
+     
             <div style={{display: "none"}}>
                 <BoardPrint ref={ref}></BoardPrint>
             </div>
