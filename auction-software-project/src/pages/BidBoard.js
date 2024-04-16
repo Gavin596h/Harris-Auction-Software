@@ -7,8 +7,6 @@ import { useLocation } from "react-router-dom";
 function BidBoard() {
   const [bids, setBids] = useState([]);
   const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
-  let location = useLocation();
-  console.log(location);
   const [currentAuction, setCurrentAuction] = useState();
   const [high, setHigh] = useState();
 
@@ -35,28 +33,45 @@ function BidBoard() {
   }
 
 
+
+
   useEffect(() => {
     const auctionNumber = localStorage.getItem('currentAuctionNumber');
     setCurrentAuctionNumber(auctionNumber);
     fetchBids(auctionNumber)
-    console.log(location);
-    const a = localStorage.getItem('selectedAuction')
-    setCurrentAuction(a);
+
+
+    const fetchAuction = async () => {
+        try {
+            const url = `http://localhost:3001/getAuction?auctionNumber=${9}`;
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCurrentAuction(data);
+          } catch (error) {
+            console.error('There was an error fetching the bids:', error);
+          }
+      }
+
+    fetchAuction();
     console.log(currentAuction)
     console.log("here I am");
+
   }, []);
 
   const SettlementPrint = React.forwardRef((props, refS) => {
     return(
-        <div className="p-7 font-fira h-screen" refS={refS}>
-        <h2 className='text-black'>Test Auction</h2>
-            <p>April 1, 2024</p>
-            <hr></hr>
-            <p>Bid No. - {high.Bidder}</p>
-            <p>Bid Amount - {high.BidAmount}</p>
-            <p>Deposit - {high.BidAmount * 0.4}</p>
-            <p>Due - {(high.BidAmount * 0.4) + high.BidAmount}</p>
-        </div>
+        // <div className="p-7 font-fira h-screen" refS={refS}>
+    <h2 className='text-black'>Test Auction</h2>
+        //     <p>April 1, 2024</p>
+        //     <hr></hr>
+        //     <p>Bid No. - {high.Bidder}</p>
+        //     <p>Bid Amount - {high.BidAmount}</p>
+        //     <p>Deposit - {high.BidAmount * 0.4}</p>
+        //     <p>Due - {(high.BidAmount * 0.4) + high.BidAmount}</p>
+        // </div>
     )
 
   })

@@ -21,9 +21,15 @@ const Home = () => {
             console.error('Failed to fetch past auctions:', error);
           }
         };
-    
         fetchPastAuctions();
       }, []);
+
+
+
+
+
+
+      
     
       const setAuctionNum = (a) => {
         localStorage.setItem('currentAuctionNumber', a.AuctionNumber);
