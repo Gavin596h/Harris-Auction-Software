@@ -128,13 +128,40 @@ function NewBid({ fetchBids, auctionNumber }) {
         const auctionNumber = localStorage.getItem('currentAuctionNumber');
         setCurrentAuctionNumber(auctionNumber);
         fetchAuction(auctionNumber);
+        setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1));
+        renderTracts();
 
         window.addEventListener('storage', () => {
             console.log("Change to local storage!");
             setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1));
+            renderTracts();
         });
 
       }, []);
+
+      const renderTracts = () => {
+        console.log(tract);
+        return (
+            <div>
+            {             
+              tract.map((tract) => (
+                  <li key={tract}>
+                  <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tract} onChange={e => setTracts(e.target.value)}></input>
+                  <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                      <div className="block text-center items-center w-full">{tract}</div>
+                  </label>
+              </li> 
+        
+              ))
+          }
+        </div>
+        )
+      }
+
+
+
+
+
 
 
 
@@ -152,16 +179,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
                 {
-                    tract.map((tract) => (
-                        
-                        <li>
-                        <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tract} onChange={e => setTracts(e.target.value)}></input>
-                        <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                            <div className="block text-center items-center w-full">{tract}</div>
-                        </label>
-                    </li> 
-              
-                    ))
+                    renderTracts()
                 }
             </ul>
             <label htmlFor="BidType"> Bid Type </label>
