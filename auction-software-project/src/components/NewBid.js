@@ -4,14 +4,20 @@ import Modal from 'react-bootstrap/Modal';
 import Report from './Report';
 import BidBoard from '../pages/BidBoard';
 
-const NewBid = ({ fetchBids, auctionNumber }) => {
+function NewBid({ fetchBids, auctionNumber }) {
     const [bidderNumber, setBidderNumber] = useState('');
     const [tracts, setTracts] = useState('');
     const [bidAmount, setBidAmount] = useState('');
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
     const [show, setShow] = useState(false);
+    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
     const [recentBidId, setRecentBidId] = useState('');
-    const [tractAmt, setTractAmt] = useState();
+    const [currentAuction, setCurrentAuction] = useState({
+        name: '',
+        tractNum: 0
+      });
+    const [tract, setTract] = useState([]);
+    
 
     // Reset form fields to their default states
     const clearForm = () => {
@@ -97,13 +103,38 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
     };
         
 
-
+    const fetchAuction = async (a) => {
+        try {
+            const url = `http://localhost:3001/getAuctionByNumber/${a}`; // updated to auctionCRUDs new method
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCurrentAuction(({
+                name: data.AuctionName,
+                tractNum: data.TractQuantity
+            })); //this gets the auction name from the data pulled from the search
+            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
+        } catch (error) {
+            console.error('There was an error fetching the auction:', error);
+        }
+    }
+  
+    
+    
       useEffect(() => {
-        const t = localStorage.getItem('tractNum')
-        setTractAmt(parseInt(t, 10));  
-        console.log(tractAmt);   
-     }, []);
+        const auctionNumber = localStorage.getItem('currentAuctionNumber');
+        setCurrentAuctionNumber(auctionNumber);
+        fetchAuction(auctionNumber);
 
+        window.addEventListener('storage', () => {
+            console.log("Change to local storage!");
+            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1));
+        });
+
+      }, []);
 
 
 
@@ -121,36 +152,17 @@ const NewBid = ({ fetchBids, auctionNumber }) => {
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
                 {
-                    Array.from(
-                        {length: tractAmt},
-                        (_, tract) => (
-                            <li>
-                                <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tract} onChange={e => setTracts(e.target.value)}></input>
-                                <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                                    <div className="block text-center items-center w-full">{tract}</div>
-                                </label>
-                            </li>
-                        )
-                    )
+                    tract.map((tract) => (
+                        
+                        <li>
+                        <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tract} onChange={e => setTracts(e.target.value)}></input>
+                        <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                            <div className="block text-center items-center w-full">{tract}</div>
+                        </label>
+                    </li> 
+              
+                    ))
                 }
-
-                    {/* {(() => {
-                        let arr = [];
-                             for(let tract = 0; tract < tractAmt; tract++) {
-                                arr.push(
-                                <li>
-                                    <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)}></input>
-                                    <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                                        <div className="block text-center items-center w-full">{tract}</div>
-                                    </label>
-                                </li> 
-                                )
-                            }
-                            return arr;
-                        })()} */}
-
-                
-                
             </ul>
             <label htmlFor="BidType"> Bid Type </label>
             <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>

@@ -7,8 +7,11 @@ import { useLocation } from "react-router-dom";
 function BidBoard() {
   const [bids, setBids] = useState([]);
   const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
-  const [currentAuction, setCurrentAuction] = useState();
-  const [high, setHigh] = useState();
+  const [currentAuction, setCurrentAuction] = useState({
+    name: '',
+    tractNum: 0
+  });
+
 
   const ref = useRef();
 
@@ -26,40 +29,35 @@ function BidBoard() {
     }
   };
 
-  const isHigh = (b) => {
-    if(b.High) {
-        setHigh(b);
+
+  const fetchAuction = async (a) => {
+    try {
+        const url = `http://localhost:3001/getAuctionByNumber/${a}`; // updated to auctionCRUDs new method
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCurrentAuction(({
+            name: data.AuctionName,
+            tractNum: data.TractAcres
+        })); //this gets the auction name from the data pulled from the search
+    } catch (error) {
+        console.error('There was an error fetching the auction:', error);
     }
-  }
-
-
-
+}
 
   useEffect(() => {
     const auctionNumber = localStorage.getItem('currentAuctionNumber');
     setCurrentAuctionNumber(auctionNumber);
     fetchBids(auctionNumber)
-
-
-    const fetchAuction = async () => {
-        try {
-            const url = `http://localhost:3001/getAuction?auctionNumber=${9}`;
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            setCurrentAuction(data);
-          } catch (error) {
-            console.error('There was an error fetching the bids:', error);
-          }
-      }
-
-    fetchAuction();
-    console.log(currentAuction)
-    console.log("here I am");
+    fetchAuction(auctionNumber);
 
   }, []);
+
+  
+  console.log(JSON.stringify(currentAuction))
 
   const SettlementPrint = React.forwardRef((props, refS) => {
     return(
@@ -227,7 +225,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
     <>
           <div className="p-4 sm:ml-64 font-fira dark:bg-gray-800 h-screen">
             <div>
-                <h2 className='text-white'>{currentAuction}</h2>
+                <h2 className='text-white'>{currentAuction.name}</h2>
                 <ReactToPrint
                 content={() => ref.current}
                 trigger={() => (
