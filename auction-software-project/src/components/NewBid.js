@@ -116,7 +116,8 @@ function NewBid({ fetchBids, auctionNumber }) {
                 name: data.AuctionName,
                 tractNum: data.TractQuantity
             })); //this gets the auction name from the data pulled from the search
-            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
+            console.log(currentAuction.tractNum);
+
         } catch (error) {
             console.error('There was an error fetching the auction:', error);
         }
@@ -125,38 +126,19 @@ function NewBid({ fetchBids, auctionNumber }) {
     
     
       useEffect(() => {
-        const auctionNumber = localStorage.getItem('currentAuctionNumber');
-        setCurrentAuctionNumber(auctionNumber);
-        fetchAuction(auctionNumber);
-        setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1));
-        renderTracts();
-
         window.addEventListener('storage', () => {
+            const auctionNumber = localStorage.getItem('currentAuctionNumber');
+            setCurrentAuctionNumber(auctionNumber);
+            fetchAuction(auctionNumber);
             console.log("Change to local storage!");
-            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1));
-            renderTracts();
+            console.log(auctionNumber);
+            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
+            console.log(currentAuction.tractNum);
+
         });
 
       }, []);
 
-      const renderTracts = () => {
-        console.log(tract);
-        return (
-            <div>
-            {             
-              tract.map((tract) => (
-                  <li key={tract}>
-                  <input id={tract} type="checkbox" class="hidden peer" required="" name="Tracts" value={tract} onChange={e => setTracts(e.target.value)}></input>
-                  <label for={tract} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                      <div className="block text-center items-center w-full">{tract}</div>
-                  </label>
-              </li> 
-        
-              ))
-          }
-        </div>
-        )
-      }
 
 
 
@@ -178,9 +160,17 @@ function NewBid({ fetchBids, auctionNumber }) {
             <input className="w-full p-2"></input>
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
-                {
-                    renderTracts()
-                }
+            {             
+              tract.map((t) => (
+                  <li key={t}>
+                  <input id={t} type="checkbox" className="hidden peer" required="" name="Tracts" value={t} onChange={e => setTracts(e.target.value)}></input>
+                  <label for={t} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                      <div className="block text-center items-center w-full">{t}</div>
+                  </label>
+              </li> 
+        
+              ))
+          }
             </ul>
             <label htmlFor="BidType"> Bid Type </label>
             <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>
