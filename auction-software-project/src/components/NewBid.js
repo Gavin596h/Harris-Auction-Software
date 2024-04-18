@@ -5,7 +5,7 @@ import Report from './Report';
 import BidBoard from '../pages/BidBoard';
 function NewBid({ fetchBids, auctionNumber }) {
     const [bidderNumber, setBidderNumber] = useState('');
-    const [tracts, setTracts] = useState('');
+    const [tracts, setTracts] = useState([]);
     const [bidAmount, setBidAmount] = useState('');
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
     const [show, setShow] = useState(false);
@@ -15,25 +15,57 @@ function NewBid({ fetchBids, auctionNumber }) {
         name: '',
         tractNum: 0
       });
-    const [tract, setTract] = useState([]);
+    const [tract, setTract] = useState([Number]);
     const [bids, setBids] = useState([]);
 
     // Reset form fields to their default states
     const clearForm = () => {
         setBidderNumber('');
-        setTracts('');
+        setTracts([]);
         setBidAmount('');
         setBidType('InTotal');
     };
+
+    useEffect(() => {
+        const auctionNumber = localStorage.getItem('currentAuctionNumber');
+        if (!auctionNumber) {
+            console.error("Auction number is undefined in NewBid component.");
+            // You might want to handle this case, perhaps redirect or show an error
+        }
+        setCurrentAuctionNumber(auctionNumber);
+        fetchAuction(auctionNumber);
+        fetchNewBids();
+        console.log("Change to local storage!");
+        console.log(auctionNumber);
+        setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
+        console.log(currentAuction.tractNum);
+
+
+    }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
+
+    const handleCheckboxChange = (tractNumber) => {
+        setTracts(prev => {
+            if (prev.includes(tractNumber)) {
+                return prev.filter(t => t !== tractNumber);
+            } else {
+                return [...prev, tractNumber];
+            }
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const TractNumbers = tracts.split(',').map(Number);
+        if (!currentAuctionNumber) {
+            alert("Auction number is not available. Cannot submit the bid.");
+            return;
+        }
+        const TractNumbers = tracts;
         // Here, calculate the "toLead" and "perAcre" as necessary before sending
         const toLead = calculateToLead(); // This needs actual implementation
         const perAcre = calculatePerAcre(); // This too
-        console.log("Submitting bid for auctionNumber:", auctionNumber);
+        console.log("Submitting bid for auctionNumber:", currentAuctionNumber);
         const bid = {
-            AuctionNumber: auctionNumber,
+            AuctionNumber: currentAuctionNumber,
             Bidder: parseInt(bidderNumber, 10), 
             Tract: TractNumbers, 
             BidAmount: parseInt(bidAmount),
@@ -41,6 +73,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             PerAcre: perAcre,
             // Include any other fields required by your schema
         };
+        console.log(bid);
         try {
             const response = await fetch('http://localhost:3001/api/bids', {
                 method: 'POST',
@@ -55,6 +88,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             const createdBid = await response.json();
             setRecentBidId(createdBid._id);
             fetchNewBids(auctionNumber); // Refresh the bid list
+            console.log(bids);
             clearForm();
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
@@ -90,19 +124,23 @@ function NewBid({ fetchBids, auctionNumber }) {
         }
     };
 
-    const fetchNewBids = async (auctionNumber) => {
-        try {
-          const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          setBids(data);
-        } catch (error) {
-          console.error('There was an error fetching the bids:', error);
+    const fetchNewBids = async () => {
+        if (!currentAuctionNumber) {
+            console.log("Auction number is not available, cannot fetch bids.");
+            return;
         }
-      };
+    
+        try {
+            const response = await fetch(`http://localhost:3001/api/bids?auctionNumber=${currentAuctionNumber}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch bids: ' + response.statusText);
+            }
+            const bids = await response.json();
+            setBids(bids);
+        } catch (error) {
+            console.error("Error fetching bids:", error);
+        }
+    };
         
     const fetchAuction = async (a) => {
         try {
@@ -127,17 +165,7 @@ function NewBid({ fetchBids, auctionNumber }) {
   
 
 
-      useEffect(() => {
-            const auctionNumber = localStorage.getItem('currentAuctionNumber');
-            setCurrentAuctionNumber(auctionNumber);
-            fetchAuction(auctionNumber);
-            console.log("Change to local storage!");
-            console.log(auctionNumber);
-            setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
-            console.log(currentAuction.tractNum);
-
-
-      }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
+        
 
     return (
 <>
@@ -148,16 +176,16 @@ function NewBid({ fetchBids, auctionNumber }) {
             <label htmlFor="BidderNumber" className="text-white">Bid Numer</label>
             <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
             <hr></hr>
-            <labe  htmlFor="Tracts" className="text-white"  type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} >Bid Amount</labe>
-            <input className="w-full p-2"></input>
+            <labe  htmlFor="Tracts" className="text-white">Bid Amount</labe>
+            <input className="w-full p-2"type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} ></input>
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
             {             
               tract.map((t) => (
                   <li key={t}>
-                  <input id={t} type="checkbox" className="hidden peer" required="" name="Tracts" value={t} onChange={e => setTracts(e.target.value)}></input>
-                  <label for={t} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                      <div className="block text-center items-center w-full">{t}</div>
+                  <input id={`tract-${t}`} type="checkbox" className="hidden peer" required="" name="Tracts" checked={tracts.includes(t)} onChange={() => handleCheckboxChange(t)}></input>
+                  <label for={`tract-${t}`} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                      <div className="block text-center items-center w-full">{`${t}`}</div>
                   </label>
               </li> 
         
@@ -175,7 +203,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             </form>
         </div>
       
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
             <label htmlFor="BidderNumber"> Bidder Number </label>
             <input type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)} />
             <label htmlFor="Tracts"> Tracts Being Bid On </label>
@@ -190,7 +218,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             <button type="submit" id="SubmitBid" name="SubmitBid"> Submit Bid </button>
             <button type="button" id="ClearForm" name="ClearForm" onClick={clearForm}> Clear Form </button>
             <button type="button" id="DeleteRecent" name="DeleteRecent" onClick={handleDeleteRecentBid}> Delete </button>
-        </form>
+        </form> */}
         </>
     );
 }

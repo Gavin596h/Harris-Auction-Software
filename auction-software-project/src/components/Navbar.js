@@ -8,7 +8,7 @@ import { IoIosHelpCircleOutline } from "react-icons/io";
 import NewBid from './NewBid';
 
 
-const Navbar = () => {
+const Navbar = ({ fetchBids, auctionNumber }) => {
     return (
         <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
             <div className='h-full overflow-y-auto py-5 px-3 bg-red-700'>         
@@ -36,7 +36,7 @@ const Navbar = () => {
                         <span class="ml-3">Calandar</span>
                         </a>
                     </li>
-                    <NewBid></NewBid>
+                    <NewBid fetchBids={fetchBids} auctionNumber={auctionNumber} />
                     </ul>
             </div>
         </aside>
