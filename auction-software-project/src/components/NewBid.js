@@ -116,7 +116,6 @@ function NewBid({ fetchBids, auctionNumber }) {
                 name: data.AuctionName,
                 tractNum: data.TractQuantity
             })); //this gets the auction name from the data pulled from the search
-            console.log(currentAuction.tractNum);
 
         } catch (error) {
             console.error('There was an error fetching the auction:', error);
@@ -126,7 +125,6 @@ function NewBid({ fetchBids, auctionNumber }) {
     
     
       useEffect(() => {
-        window.addEventListener('storage', () => {
             const auctionNumber = localStorage.getItem('currentAuctionNumber');
             setCurrentAuctionNumber(auctionNumber);
             fetchAuction(auctionNumber);
@@ -135,17 +133,8 @@ function NewBid({ fetchBids, auctionNumber }) {
             setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
             console.log(currentAuction.tractNum);
 
-        });
 
-      }, []);
-
-
-
-
-
-
-
-
+      }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
 
     return (
 <>

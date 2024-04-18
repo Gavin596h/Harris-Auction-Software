@@ -57,7 +57,6 @@ function BidBoard() {
   }, []);
 
   
-  console.log(JSON.stringify(currentAuction))
 
   const SettlementPrint = React.forwardRef((props, refS) => {
     return(
