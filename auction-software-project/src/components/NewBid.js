@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Report from './Report';
 import BidBoard from '../pages/BidBoard';
-
 function NewBid({ fetchBids, auctionNumber }) {
     const [bidderNumber, setBidderNumber] = useState('');
     const [tracts, setTracts] = useState('');
@@ -17,7 +16,7 @@ function NewBid({ fetchBids, auctionNumber }) {
         tractNum: 0
       });
     const [tract, setTract] = useState([]);
-    
+    const [bids, setBids] = useState([]);
 
     // Reset form fields to their default states
     const clearForm = () => {
@@ -26,18 +25,13 @@ function NewBid({ fetchBids, auctionNumber }) {
         setBidAmount('');
         setBidType('InTotal');
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const TractNumbers = tracts.split(',').map(Number);
-
         // Here, calculate the "toLead" and "perAcre" as necessary before sending
         const toLead = calculateToLead(); // This needs actual implementation
         const perAcre = calculatePerAcre(); // This too
-
         console.log("Submitting bid for auctionNumber:", auctionNumber);
-
         const bid = {
             AuctionNumber: auctionNumber,
             Bidder: parseInt(bidderNumber, 10), 
@@ -47,7 +41,6 @@ function NewBid({ fetchBids, auctionNumber }) {
             PerAcre: perAcre,
             // Include any other fields required by your schema
         };
-
         try {
             const response = await fetch('http://localhost:3001/api/bids', {
                 method: 'POST',
@@ -56,29 +49,24 @@ function NewBid({ fetchBids, auctionNumber }) {
                 },
                 body: JSON.stringify(bid),
             });
-
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
             const createdBid = await response.json();
             setRecentBidId(createdBid._id);
-            fetchBids(auctionNumber); // Refresh the bid list
+            fetchNewBids(auctionNumber); // Refresh the bid list
             clearForm();
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
         }
     };
-
     // Placeholder functions - implement calculation logic based on your requirements
     const calculateToLead = () => {
         return 0; // Implement actual logic
     };
-
     const calculatePerAcre = () => {
         return 0; // Implement actual logic
     };
-
     const handleDeleteRecentBid = async () => {
         if (!recentBidId) {
             alert("No recent bid to delete.");
@@ -101,8 +89,21 @@ function NewBid({ fetchBids, auctionNumber }) {
             console.error('There was a problem with the delete operation:', error);
         }
     };
-        
 
+    const fetchNewBids = async (auctionNumber) => {
+        try {
+          const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setBids(data);
+        } catch (error) {
+          console.error('There was an error fetching the bids:', error);
+        }
+      };
+        
     const fetchAuction = async (a) => {
         try {
             const url = `http://localhost:3001/getAuctionByNumber/${a}`; // updated to auctionCRUDs new method
@@ -116,14 +117,16 @@ function NewBid({ fetchBids, auctionNumber }) {
                 name: data.AuctionName,
                 tractNum: data.TractQuantity
             })); //this gets the auction name from the data pulled from the search
+            console.log(currentAuction.tractNum);
 
         } catch (error) {
             console.error('There was an error fetching the auction:', error);
         }
     }
+
   
-    
-    
+
+
       useEffect(() => {
             const auctionNumber = localStorage.getItem('currentAuctionNumber');
             setCurrentAuctionNumber(auctionNumber);
@@ -172,31 +175,23 @@ function NewBid({ fetchBids, auctionNumber }) {
             </form>
         </div>
       
-
-
-
-        {/* <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <label htmlFor="BidderNumber"> Bidder Number </label>
             <input type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)} />
-
             <label htmlFor="Tracts"> Tracts Being Bid On </label>
             <input type="text" id="Tracts" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)} />
-
             <label htmlFor="BidAmount"> Bid Amount </label>
             <input type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} />
-
             <label htmlFor="BidType"> Bid Type </label>
             <select id="BidType" name="BidType" value={bidType} onChange={e => setBidType(e.target.value)}>
                 <option value="InTotal">In Total</option>
                 <option value="PerAcre">Per Acre</option>
             </select> 
-
             <button type="submit" id="SubmitBid" name="SubmitBid"> Submit Bid </button>
             <button type="button" id="ClearForm" name="ClearForm" onClick={clearForm}> Clear Form </button>
             <button type="button" id="DeleteRecent" name="DeleteRecent" onClick={handleDeleteRecentBid}> Delete </button>
-        </form> */}
+        </form>
         </>
     );
 }
-
 export default NewBid; 

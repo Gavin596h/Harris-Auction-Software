@@ -253,12 +253,6 @@ const BoardPrint = React.forwardRef((props, ref) => {
                             Bid Amount
                         </th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
-                            To Lead
-                        </th>
-                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
-                            Per Acre
-                        </th>
-                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
                             High
                         </th>
                         <th scope="col" className="px-6 py-3">
@@ -271,10 +265,12 @@ const BoardPrint = React.forwardRef((props, ref) => {
                     <tr key={index} className="bg-black">
                         <td className="border-gray-400 border-r-2 px-6">{bid.Bidder}</td>
                         <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount}</td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead}</td>
-                        <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre}</td>
                         <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
-                        <td className="border-gray-400 px-6 py-4">{bid.Tract}</td>
+                        <td className="border-gray-400 px-6 py-4">{
+                            bid.Tract.map((t) => (
+                                <span className='p-2 m-2 text-white bg-gray-700'>{t}</span>
+                            ))
+                        }</td>
                     </tr>
                 ))} 
 
