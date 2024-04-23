@@ -4,74 +4,75 @@ import Report from '../components/Report';
 import ReactToPrint from "react-to-print";
 import { useLocation } from "react-router-dom";
 
-function BidBoard() {
-  const [bids, setBids] = useState([]);
-  const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
-  const [currentAuction, setCurrentAuction] = useState({
-    name: '',
-    tractNum: 0
-  });
+function BidBoard({ bids, fetchBids }) {
+    const location = useLocation();
+    const auctionInfo = location.state?.selectedAution;
+    
+    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+    const [currentAuction, setCurrentAuction] = useState({
+        name: '',
+        tractNum: 0
+    });
 
+    const ref = useRef();
 
-  const ref = useRef();
-
-  const fetchBids = async (auctionNumber) => {
-    try {
-      const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setBids(data);
-    } catch (error) {
-      console.error('There was an error fetching the bids:', error);
-    }
-  };
-
-
-  const fetchAuction = async (a) => {
-    try {
-        const url = `http://localhost:3001/getAuctionByNumber/${a}`; // updated to auctionCRUDs new method
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    const fetchAuction = async (a) => {
+        try {
+            const url = `http://localhost:3001/getAuctionByNumber/${a}`; // updated to auctionCRUDs new method
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCurrentAuction(({
+                name: data.AuctionName,
+                tractNum: data.TractAcres
+            })); //this gets the auction name from the data pulled from the search
+        } catch (error) {
+            console.error('There was an error fetching the auction:', error);
         }
-        const data = await response.json();
-        setCurrentAuction(({
-            name: data.AuctionName,
-            tractNum: data.TractAcres
-        })); //this gets the auction name from the data pulled from the search
-    } catch (error) {
-        console.error('There was an error fetching the auction:', error);
     }
-}
 
-  useEffect(() => {
-    const auctionNumber = localStorage.getItem('currentAuctionNumber');
-    setCurrentAuctionNumber(auctionNumber);
-    fetchBids(auctionNumber)
-    fetchAuction(auctionNumber);
+    useEffect(() => {
+        const handleStorageChange = event => {
+            if (event.key === 'latestBid') {
+                const latestBid = JSON.parse(event.newValue);
+                if (latestBid && latestBid.auctionNumber === currentAuctionNumber) {
+                    fetchBids(currentAuctionNumber);
+                }
+            }
+        };
+    
+        window.addEventListener('storage', handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [currentAuctionNumber, fetchBids]);
 
-  }, []);
+    useEffect(() => {
+        const auctionNumber = localStorage.getItem('currentAuctionNumber');
+        if (auctionNumber) {
+            setCurrentAuctionNumber(auctionNumber);
+            fetchBids(auctionNumber);
+            fetchAuction(auctionNumber);
+        }
+    }, [fetchBids]);
 
-  
+    const SettlementPrint = React.forwardRef((props, refS) => {
+        return(
+            // <div className="p-7 font-fira h-screen" refS={refS}>
+        <h2 className='text-black'>Test Auction</h2>
+            //     <p>April 1, 2024</p>
+            //     <hr></hr>
+            //     <p>Bid No. - {high.Bidder}</p>
+            //     <p>Bid Amount - {high.BidAmount}</p>
+            //     <p>Deposit - {high.BidAmount * 0.4}</p>
+            //     <p>Due - {(high.BidAmount * 0.4) + high.BidAmount}</p>
+            // </div>
+        )
 
-  const SettlementPrint = React.forwardRef((props, refS) => {
-    return(
-        // <div className="p-7 font-fira h-screen" refS={refS}>
-    <h2 className='text-black'>Test Auction</h2>
-        //     <p>April 1, 2024</p>
-        //     <hr></hr>
-        //     <p>Bid No. - {high.Bidder}</p>
-        //     <p>Bid Amount - {high.BidAmount}</p>
-        //     <p>Deposit - {high.BidAmount * 0.4}</p>
-        //     <p>Due - {(high.BidAmount * 0.4) + high.BidAmount}</p>
-        // </div>
-    )
-
-  })
+    })
 
 const BoardPrint = React.forwardRef((props, ref) => {
 
@@ -243,21 +244,13 @@ const BoardPrint = React.forwardRef((props, ref) => {
                 />    
             </div>
         
-            <table className="w-full text-sm text-white right-0 border-collapse	">
+            <table className="w-full text-sm text-white right-0 border-collapse">
                 <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
                     <tr>
-                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400 ">
-                            Bidder Number
-                        </th>
-                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
-                            Bid Amount
-                        </th>
-                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">
-                            High
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Tract
-                        </th>
+                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bidder Number</th>
+                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bid Amount</th>
+                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">High</th>
+                        <th scope="col" className="px-6 py-3">Tract</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -271,7 +264,6 @@ const BoardPrint = React.forwardRef((props, ref) => {
                             </td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
      
@@ -280,7 +272,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
             </div>
             <div style={{display: "none"}}>
                 <SettlementPrint ref={ref}></SettlementPrint>
-                <NewBid fetchBids={fetchBids} auctionNumber={currentAuctionNumber} />
+                <NewBid fetchBids={() => fetchBids(currentAuctionNumber)} auctionNumber={currentAuctionNumber} />
             </div>
           
             </div>

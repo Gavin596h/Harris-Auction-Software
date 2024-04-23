@@ -53,11 +53,10 @@ const Home = () => {
                         <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
                         <Link to={{
                           pathname: "/bid-board",
-                          state: {selectedAution: auction}
-                            
+                          state: { selectedAuction: auction }  // Ensure this matches the object key used in BidBoard.js
                         }}>
-                          <button className="m-2 p-3 bg-red-700 text-white" key={auction.AuctionNumber} onClick={setAuctionNum.bind(this, auction)}>Start</button>
-                        </Link>                    
+                          <button onClick={setAuctionNum.bind(this, auction)}>Start</button>
+                        </Link>
                     </div>
                 </li>
                 )}

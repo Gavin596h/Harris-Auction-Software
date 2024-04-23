@@ -8,25 +8,40 @@ import Home from './pages/Home';
 import BidBoard from './pages/BidBoard';
 
 function App() {
-  const [ showNav, setShowNav ] = useState(false)
+    const [ showNav, setShowNav ] = useState(false)
+    const [bids, setBids] = useState([]);
 
-  return (
-    <div className="App">
-      <Router>
-        {/* <header>
-          <GiHamburgerMenu onClick={() => setShowNav(!showNav)}/>
-        </header> */}
-        <Navbar/>
+    const fetchBids = async (auctionNumber) => {
+        try {
+            const url = `http://localhost:3001/api/bids?auctionNumber=${auctionNumber}`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setBids(data);
+        } catch (error) {
+            console.error('There was an error fetching the bids:', error);
+        }
+    };
 
-        <Routes>
-          <Route path="/bid-board" exact={true} element={<BidBoard/>}/>
-          <Route path="/new-auction" exact={true} element={<NewAuction/>}/>
-          <Route path="/home" exact={true} element={<Home/>}/>
+    return (
+        <div className="App">
+            <Router>
+                {/* <header>
+                  <GiHamburgerMenu onClick={() => setShowNav(!showNav)}/>
+                </header> */}
+                <Navbar fetchBids={fetchBids} />
 
-        </Routes>
-      </Router>
-    </div>
-  );
+                <Routes>
+                  <Route path="/bid-board" exact={true} element={<BidBoard bids={bids} fetchBids={fetchBids} />}/>
+                  <Route path="/new-auction" exact={true} element={<NewAuction/>}/>
+                  <Route path="/home" exact={true} element={<Home/>}/>
+
+                </Routes>
+            </Router>
+        </div>
+    );
 }
 
 export default App;

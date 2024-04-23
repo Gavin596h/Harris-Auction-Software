@@ -27,6 +27,18 @@ function NewBid({ fetchBids, auctionNumber }) {
     };
 
     useEffect(() => {
+
+        function handleStorageChange() {
+            const auctionNumber = localStorage.getItem('currentAuctionNumber');
+            if (auctionNumber && auctionNumber !== currentAuctionNumber) {
+                setCurrentAuctionNumber(auctionNumber);
+                fetchAuction(auctionNumber);
+                fetchNewBids();
+            }
+        }
+
+        window.addEventListener('storage', handleStorageChange);
+
         const auctionNumber = localStorage.getItem('currentAuctionNumber');
         if (!auctionNumber) {
             console.error("Auction number is undefined in NewBid component.");
@@ -39,8 +51,6 @@ function NewBid({ fetchBids, auctionNumber }) {
         console.log(auctionNumber);
         setTract(Array.from({length: currentAuction.tractNum}, (_, i) => i + 1))
         console.log(currentAuction.tractNum);
-
-
     }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
 
     const handleCheckboxChange = (tractNumber) => {
@@ -56,44 +66,40 @@ function NewBid({ fetchBids, auctionNumber }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!currentAuctionNumber) {
-            alert("Auction number is not available. Cannot submit the bid.");
-            return;
+          alert("Auction number is not available. Cannot submit the bid.");
+          return;
         }
-        const TractNumbers = tracts;
-        // Here, calculate the "toLead" and "perAcre" as necessary before sending
-        const toLead = calculateToLead(); // This needs actual implementation
-        const perAcre = calculatePerAcre(); // This too
-        console.log("Submitting bid for auctionNumber:", currentAuctionNumber);
         const bid = {
-            AuctionNumber: currentAuctionNumber,
-            Bidder: parseInt(bidderNumber, 10), 
-            Tract: TractNumbers, 
-            BidAmount: parseInt(bidAmount),
-            ToLead: toLead,
-            PerAcre: perAcre,
-            // Include any other fields required by your schema
+          AuctionNumber: currentAuctionNumber,
+          Bidder: parseInt(bidderNumber, 10), 
+          Tract: tracts, 
+          BidAmount: parseInt(bidAmount),
+          ToLead: calculateToLead(),
+          PerAcre: calculatePerAcre(),
         };
-        console.log(bid);
+      
         try {
-            const response = await fetch('http://localhost:3001/api/bids', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bid),
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+          const response = await fetch('http://localhost:3001/api/bids', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bid),
+          });
+          if (response.ok) {
             const createdBid = await response.json();
             setRecentBidId(createdBid._id);
-            fetchNewBids(auctionNumber); // Refresh the bid list
-            console.log(bids);
+            fetchBids();  // Call this function to update the bids in BidBoard
             clearForm();
+            localStorage.setItem('latestBid', JSON.stringify({
+                timestamp: new Date().getTime(),
+                auctionNumber: currentAuctionNumber
+            }));
+          } else {
+            throw new Error('Failed to post bid');
+          }
         } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
+          console.error('There was a problem with the fetch operation:', error);
         }
-    };
+      };
     // Placeholder functions - implement calculation logic based on your requirements
     const calculateToLead = () => {
         return 0; // Implement actual logic
@@ -173,7 +179,7 @@ function NewBid({ fetchBids, auctionNumber }) {
 <div className='font-fire'>
     <form onSubmit={handleSubmit}>
         <div className="bg-gray-800 p-4">
-            <label htmlFor="BidderNumber" className="text-white">Bid Numer</label>
+            <label htmlFor="BidderNumber" className="text-white">Bid Number</label>
             <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
             <hr></hr>
             <labe  htmlFor="Tracts" className="text-white">Bid Amount</labe>
@@ -183,14 +189,13 @@ function NewBid({ fetchBids, auctionNumber }) {
             {             
               tract.map((t) => (
                   <li key={t}>
-                  <input id={`tract-${t}`} type="checkbox" className="hidden peer" required="" name="Tracts" checked={tracts.includes(t)} onChange={() => handleCheckboxChange(t)}></input>
-                  <label for={`tract-${t}`} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
-                      <div className="block text-center items-center w-full">{`${t}`}</div>
-                  </label>
-              </li> 
-        
+                    <input id={`tract-${t}`} type="checkbox" className="hidden peer" required="" name="Tracts" checked={tracts.includes(t)} onChange={() => handleCheckboxChange(t)}></input>
+                    <label for={`tract-${t}`} className=" w-10 h-10 hover:bg-gray-500 hover:text-white bg-gray-100 inline-flex items-center justify-between cursor-pointer peer-checked:text-white peer-checked:bg-red-600 rounded text-gray-900">
+                        <div className="block text-center items-center w-full">{`${t}`}</div>
+                    </label>
+                  </li> 
               ))
-          }
+            }
             </ul>
             <label htmlFor="BidType"> Bid Type </label>
             <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>
