@@ -15,28 +15,28 @@ router.post('/bids', async (req, res) => {
         // Normalize the input tracts to ensure consistency
         const normalizedInputTracts = inputTracts.map(Number).sort((a, b) => a - b);
 
-        // Fetch all bids for the auction number and tracts involved
-        const existingBids = await BidBoard.find({
+        // Fetch all high bids for the auction number and tracts involved
+        const existingHighBids = await BidBoard.find({
             AuctionNumber,
-            Tract: { $in: normalizedInputTracts }
+            Tract: { $in: normalizedInputTracts },
+            High: true
         }).session(session);
 
-        let highestBidAmount = 0;
+        let sumOfHighBids = 0;
 
-        existingBids.forEach(bid => {
-            const isRelevantBid = bid.Tract.some(tract => normalizedInputTracts.includes(tract));
-            if (isRelevantBid && bid.BidAmount > highestBidAmount) {
-                highestBidAmount = bid.BidAmount;
+        existingHighBids.forEach(bid => {
+            if (normalizedInputTracts.some(tract => bid.Tract.includes(tract))) {
+                sumOfHighBids += bid.BidAmount;
             }
         });
 
-        // The new bid must be higher than the highest existing bid amount for the involved tracts
-        if (BidAmount <= highestBidAmount) {
+        // The new bid must be higher than the sum of highest bid amounts on all involved tracts plus 50
+        if (BidAmount <= sumOfHighBids + 49) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({
-                message: "Bid not high enough. Must be higher than the highest bid on any of the involved tracts.",
-                highestBidAmount: highestBidAmount,
+                message: "Bid not high enough. Must be at least $50 higher than the sum of highest bids on the involved tracts.",
+                requiredMinimumBid: sumOfHighBids + 50,
                 yourBid: BidAmount
             });
         }
@@ -54,7 +54,8 @@ router.post('/bids', async (req, res) => {
             Bidder: parseInt(req.body.Bidder, 10),
             Tract: normalizedInputTracts,
             BidAmount,
-            High: true
+            High: true,
+            ToLead: sumOfHighBids + 100
         });
         await newBid.save({ session });
 

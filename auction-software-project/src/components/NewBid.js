@@ -93,8 +93,10 @@ function NewBid({ fetchBids, auctionNumber }) {
                 timestamp: new Date().getTime(),
                 auctionNumber: currentAuctionNumber
             }));
+            console.log('New bid placed, ToLead should now be:', createdBid.ToLead);
           } else {
-            throw new Error('Failed to post bid');
+            const errorResponse = await response.json();
+            alert(`Error: ${errorResponse.message}`);
           }
         } catch (error) {
           console.error('There was a problem with the fetch operation:', error);
@@ -204,6 +206,7 @@ function NewBid({ fetchBids, auctionNumber }) {
             </select>
                 <button className="bg-red-700 text-white w-full p-2 mb-2"  type="submit" id="SubmitBid" name="SubmitBid" onClick={handleSubmit}>Add Bid</button>
                 <button  className="bg-gray-400 text-white w-full p-2 mb-2" type="button" id="ClearForm" name="ClearForm" onClick={clearForm}>Clear Form</button>
+                <button  className="bg-red-700 text-white w-full p-2 mb-2" type="button" id="DeleteBid" name="DeleteBid" onClick={handleDeleteRecentBid}>Delete Bid</button>
             </div>
             </form>
         </div>
