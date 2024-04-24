@@ -55,7 +55,7 @@ router.post('/bids', async (req, res) => {
             Tract: normalizedInputTracts,
             BidAmount,
             High: true,
-            ToLead: sumOfHighBids + 100
+            ToLead: BidAmount + 50
         });
         await newBid.save({ session });
 
