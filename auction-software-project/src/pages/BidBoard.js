@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 
 function BidBoard({ bids, fetchBids }) {
     const location = useLocation();
-    const auctionInfo = location.state?.selectedAution;
+    const [totalBids, setTotalBids] = useState('');
     
     const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
     const [currentAuction, setCurrentAuction] = useState({
@@ -33,6 +33,15 @@ function BidBoard({ bids, fetchBids }) {
             console.error('There was an error fetching the auction:', error);
         }
     }
+
+    useEffect(() => {
+        setTotalBids(bids.reduce((acc, bid) => {
+            if(bid.High){
+                return acc + bid.BidAmount;
+            }
+            return acc;
+        }, 0))
+    }, [bids])
 
     useEffect(() => {
         const handleStorageChange = event => {
@@ -241,7 +250,9 @@ const BoardPrint = React.forwardRef((props, ref) => {
                             Settlement
                     </button>
                 )}
-                />    
+                />
+                <label htmlFor="total" className="text-white">Total</label>
+                <input className=" p-2 m-2" type="string" id="total" name="total" value={totalBids.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}></input>    
             </div>
         
             <table className="w-full text-sm text-white right-0 border-collapse">
