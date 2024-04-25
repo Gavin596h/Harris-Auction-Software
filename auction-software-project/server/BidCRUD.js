@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const BidBoard = require('./BidSchema');
+const Auction = require('./AuctionSchema');
 
 
 
@@ -12,8 +13,25 @@ router.post('/bids', async (req, res) => {
         await session.startTransaction();
         const { Tract: inputTracts, BidAmount, AuctionNumber } = req.body;
 
+        const auction = await Auction.findOne({ AuctionNumber }).session(session);
+        if (!auction || !auction.TractAcres) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: "Auction or tract acreage information not found." });
+        }
+
         // Normalize the input tracts to ensure consistency
         const normalizedInputTracts = inputTracts.map(Number).sort((a, b) => a - b);
+
+        
+        let totalAcreage = 0;
+        normalizedInputTracts.forEach(tractIndex => {
+            const acreIndex = tractIndex - 1; // Adjust index if necessary
+            if (auction.TractAcres[acreIndex] !== undefined) {
+                totalAcreage += auction.TractAcres[acreIndex];
+            }
+        });
+        
 
         // Fetch all high bids for the auction number and tracts involved
         const existingHighBids = await BidBoard.find({
@@ -41,6 +59,8 @@ router.post('/bids', async (req, res) => {
             });
         }
 
+        const perAcreValue = totalAcreage > 0 ? (BidAmount / totalAcreage) : 0;
+
         // Update the 'High' status of all previously highest bids for the involved tracts
         await BidBoard.updateMany(
             { AuctionNumber, Tract: { $in: normalizedInputTracts }, High: true },
@@ -55,7 +75,8 @@ router.post('/bids', async (req, res) => {
             Tract: normalizedInputTracts,
             BidAmount,
             High: true,
-            ToLead: BidAmount + 50
+            ToLead: BidAmount + 50,
+            PerAcre: perAcreValue
         });
         await newBid.save({ session });
 

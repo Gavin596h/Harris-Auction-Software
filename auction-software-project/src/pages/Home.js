@@ -55,7 +55,7 @@ const Home = () => {
                           pathname: "/bid-board",
                           state: { selectedAuction: auction }  // Ensure this matches the object key used in BidBoard.js
                         }}>
-                          <button onClick={setAuctionNum.bind(this, auction)}>Start</button>
+                          <button className="m-2 p-3 bg-red-700 text-white" onClick={setAuctionNum.bind(this, auction)}>Start</button>
                         </Link>
                     </div>
                 </li>

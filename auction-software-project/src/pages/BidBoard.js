@@ -5,8 +5,8 @@ import ReactToPrint from "react-to-print";
 import { useLocation } from "react-router-dom";
 
 function BidBoard({ bids, fetchBids }) {
-    const location = useLocation();
     const [totalBids, setTotalBids] = useState('');
+    const [totalPerAcre, setTotalPerAcre] = useState('');
     
     const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
     const [currentAuction, setCurrentAuction] = useState({
@@ -33,6 +33,15 @@ function BidBoard({ bids, fetchBids }) {
             console.error('There was an error fetching the auction:', error);
         }
     }
+
+    useEffect(() => {
+        setTotalPerAcre(bids.reduce((acc, bid) => {
+            if(bid.High){
+                return acc + bid.PerAcre;
+            }
+            return acc;
+        }, 0))
+    }, [bids])
 
     useEffect(() => {
         setTotalBids(bids.reduce((acc, bid) => {
@@ -252,7 +261,9 @@ const BoardPrint = React.forwardRef((props, ref) => {
                 )}
                 />
                 <label htmlFor="total" className="text-white">Total</label>
-                <input className=" p-2 m-2" type="string" id="total" name="total" value={totalBids.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}></input>    
+                <input className=" p-2 m-2" type="string" id="total" name="total" value={totalBids.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}></input>
+                <label htmlFor="PerAcreTotal" className="text-white">Per Acre</label>
+                <input className=" p-2 m-2" type="string" id="total" name="PerAcreTotal" value={totalPerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 })}></input>
             </div>
         
             <table className="w-full text-sm text-white right-0 border-collapse">
@@ -261,6 +272,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bidder Number</th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bid Amount</th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">To Lead</th>
+                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Per Acre</th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">High</th>
                         <th scope="col" className="px-6 py-3">Tract</th>
                     </tr>
@@ -271,7 +283,7 @@ const BoardPrint = React.forwardRef((props, ref) => {
                             <td className="border-gray-400 border-r-2 px-6">{bid.Bidder}</td>
                             <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
                             <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead ? bid.ToLead.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}) : "$0"}</td>
-                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
+                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre ? bid.PerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2}) : "$0"}</td>                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
                             <td className="border-gray-400 px-6 py-4">
                                 {bid.Tract.map(t => <span key={t} className='p-2 m-2 text-white bg-gray-700'>{t}</span>)}
                             </td>

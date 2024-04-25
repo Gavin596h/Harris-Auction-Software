@@ -42,7 +42,6 @@ function NewBid({ fetchBids, auctionNumber }) {
         const auctionNumber = localStorage.getItem('currentAuctionNumber');
         if (!auctionNumber) {
             console.error("Auction number is undefined in NewBid component.");
-            // You might want to handle this case, perhaps redirect or show an error
         }
         setCurrentAuctionNumber(auctionNumber);
         fetchAuction(auctionNumber);
@@ -210,23 +209,6 @@ function NewBid({ fetchBids, auctionNumber }) {
             </div>
             </form>
         </div>
-      
-        {/* <form onSubmit={handleSubmit}>
-            <label htmlFor="BidderNumber"> Bidder Number </label>
-            <input type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)} />
-            <label htmlFor="Tracts"> Tracts Being Bid On </label>
-            <input type="text" id="Tracts" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)} />
-            <label htmlFor="BidAmount"> Bid Amount </label>
-            <input type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} />
-            <label htmlFor="BidType"> Bid Type </label>
-            <select id="BidType" name="BidType" value={bidType} onChange={e => setBidType(e.target.value)}>
-                <option value="InTotal">In Total</option>
-                <option value="PerAcre">Per Acre</option>
-            </select> 
-            <button type="submit" id="SubmitBid" name="SubmitBid"> Submit Bid </button>
-            <button type="button" id="ClearForm" name="ClearForm" onClick={clearForm}> Clear Form </button>
-            <button type="button" id="DeleteRecent" name="DeleteRecent" onClick={handleDeleteRecentBid}> Delete </button>
-        </form> */}
         </>
     );
 }
