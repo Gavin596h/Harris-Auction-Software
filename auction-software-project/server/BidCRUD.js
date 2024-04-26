@@ -20,55 +20,98 @@ router.post('/bids', async (req, res) => {
             return res.status(404).json({ message: "Auction or tract acreage information not found." });
         }
 
-        // Normalize the input tracts to ensure consistency
         const normalizedInputTracts = inputTracts.map(Number).sort((a, b) => a - b);
 
-        
-        let totalAcreage = 0;
-        normalizedInputTracts.forEach(tractIndex => {
-            const acreIndex = tractIndex - 1; // Adjust index if necessary
-            if (auction.TractAcres[acreIndex] !== undefined) {
-                totalAcreage += auction.TractAcres[acreIndex];
-            }
-        });
-        
+        let totalAcreage = normalizedInputTracts.reduce((acc, tractIndex) => acc + auction.TractAcres[tractIndex - 1], 0);
 
-        // Fetch all high bids for the auction number and tracts involved
+        // Fetch all high bids to determine the current highest bids and sum of high bids
         const existingHighBids = await BidBoard.find({
             AuctionNumber,
-            Tract: { $in: normalizedInputTracts },
-            High: true
+            High: true,
+            Disabled: false
         }).session(session);
 
-        let sumOfHighBids = 0;
+        let highestIndividualBids = new Map();
 
         existingHighBids.forEach(bid => {
-            if (normalizedInputTracts.some(tract => bid.Tract.includes(tract))) {
-                sumOfHighBids += bid.BidAmount;
+            bid.Tract.forEach(tract => {
+                let currentBid = highestIndividualBids.get(tract) || { bidAmount: 0 };
+                if (currentBid.bidAmount < bid.BidAmount) {
+                    highestIndividualBids.set(tract, { bidAmount: bid.BidAmount, shared: bid.Tract.length > 1 });
+                }
+            });
+        });
+
+        let requiredMinimumBid = 0;
+        normalizedInputTracts.forEach(tract => {
+            let bidInfo = highestIndividualBids.get(tract);
+            if (bidInfo && bidInfo.shared) {
+                // Divide the bid amount by the number of tracts in the combination to calculate the contribution per tract
+                requiredMinimumBid += (bidInfo.bidAmount / bidInfo.tractCount) + 25;
+            } else if (bidInfo) {
+                requiredMinimumBid += bidInfo.bidAmount;
             }
         });
 
-        // The new bid must be higher than the sum of highest bid amounts on all involved tracts plus 50
-        if (BidAmount <= sumOfHighBids + 49) {
+        requiredMinimumBid += 49; // Minimum $50 over the sum of the highest individual bids for these tracts
+
+        if (BidAmount <= requiredMinimumBid) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({
                 message: "Bid not high enough. Must be at least $50 higher than the sum of highest bids on the involved tracts.",
-                requiredMinimumBid: sumOfHighBids + 50,
+                requiredMinimumBid: requiredMinimumBid,
                 yourBid: BidAmount
             });
         }
 
-        const perAcreValue = totalAcreage > 0 ? (BidAmount / totalAcreage) : 0;
+        if (normalizedInputTracts.length === 1) {
+            const singleTract = normalizedInputTracts[0];
+            // Find all combination bids where the single tract is involved and the bid is high
+            const combinationBids = await BidBoard.find({
+                AuctionNumber,
+                Tract: singleTract,
+                High: true,
+                Disabled: false,
+                'Tract.1': { $exists: true }  // Filters for combination bids
+            }).session(session);
+        
+            // Process each combination bid found
+            for (let combinationBid of combinationBids) {
+                // Mark the combination bid as not high
+                combinationBid.High = false;
+                combinationBid.Disabled = true;
+                await combinationBid.save({ session });
+        
+                // Re-evaluate the high status for each tract in the combination
+                for (let tract of combinationBid.Tract) {
+                    // Get all bids for this tract excluding the current combination bid
+                    const bidsForTract = await BidBoard.find({
+                        AuctionNumber,
+                        Tract: tract,
+                        _id: { $ne: combinationBid._id }
+                    }).sort({ BidAmount: -1 }).session(session);
+        
+                    // Set the highest bid for this tract as high, if it exists
+                    if (bidsForTract.length > 0) {
+                        const highestBid = bidsForTract[0];
+                        highestBid.High = true;
+                        await highestBid.save({ session });
+                    }
+                }
+            }
+        }
 
-        // Update the 'High' status of all previously highest bids for the involved tracts
+        // Set all bids involving the tracts to not high
         await BidBoard.updateMany(
             { AuctionNumber, Tract: { $in: normalizedInputTracts }, High: true },
             { $set: { High: false } },
             { session }
         );
 
-        // Insert the new bid as high within the current AuctionNumber and involved tracts
+        const perAcreValue = totalAcreage > 0 ? (BidAmount / totalAcreage) : 0;
+
+        // Insert the new high bid
         const newBid = new BidBoard({
             AuctionNumber,
             Bidder: parseInt(req.body.Bidder, 10),

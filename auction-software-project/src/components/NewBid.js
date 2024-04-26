@@ -75,6 +75,7 @@ function NewBid({ fetchBids, auctionNumber }) {
           BidAmount: parseInt(bidAmount),
           ToLead: calculateToLead(),
           PerAcre: calculatePerAcre(),
+          BidType: bidType
         };
       
         try {
