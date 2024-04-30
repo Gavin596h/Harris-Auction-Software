@@ -3,12 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Report from './Report';
 import BidBoard from '../pages/BidBoard';
+
 function NewBid({ fetchBids, auctionNumber }) {
     const [bidderNumber, setBidderNumber] = useState('');
     const [tracts, setTracts] = useState([]);
     const [bidAmount, setBidAmount] = useState('');
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
-    const [show, setShow] = useState(false);
     const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
     const [recentBidId, setRecentBidId] = useState('');
     const [currentAuction, setCurrentAuction] = useState({
@@ -17,6 +17,7 @@ function NewBid({ fetchBids, auctionNumber }) {
       });
     const [tract, setTract] = useState([Number]);
     const [bids, setBids] = useState([]);
+    const [isActive, setActive] = useState();
 
     // Reset form fields to their default states
     const clearForm = () => {
@@ -38,6 +39,9 @@ function NewBid({ fetchBids, auctionNumber }) {
         }
 
         window.addEventListener('storage', handleStorageChange);
+        setActive(JSON.parse(localStorage.getItem('active')));
+
+        console.log(isActive);
 
         const auctionNumber = localStorage.getItem('currentAuctionNumber');
         if (!auctionNumber) {
@@ -178,9 +182,9 @@ function NewBid({ fetchBids, auctionNumber }) {
     return (
 <>
 <br></br>
-<div className='font-fire'>
-    <form onSubmit={handleSubmit}>
-        <div className="bg-gray-800 p-4">
+<div>
+    <form onSubmit={handleSubmit} className='font-fire'>
+        <div className="bg-gray-900 p-4">
             <label htmlFor="BidderNumber" className="text-white">Bid Number</label>
             <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
             <hr></hr>
