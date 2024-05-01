@@ -9,7 +9,7 @@ function NewBid({ fetchBids, auctionNumber }) {
     const [bidAmount, setBidAmount] = useState('');
     const [bidType, setBidType] = useState('InTotal'); // Assuming this affects calculations
     const [show, setShow] = useState(false);
-    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(localStorage.getItem('currentAuctionNumber'));
     const [recentBidId, setRecentBidId] = useState('');
     const [currentAuction, setCurrentAuction] = useState({
         name: '',
@@ -52,6 +52,14 @@ function NewBid({ fetchBids, auctionNumber }) {
         console.log(currentAuction.tractNum);
     }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
 
+    useEffect(() => {
+        if (auctionNumber) {
+            // Do something when auctionNumber changes
+            console.log("Auction Number has changed to: ", auctionNumber);
+            fetchNewBids(auctionNumber);
+        }
+    }, [auctionNumber]);
+    
     const handleCheckboxChange = (tractNumber) => {
         setTracts(prev => {
             if (prev.includes(tractNumber)) {

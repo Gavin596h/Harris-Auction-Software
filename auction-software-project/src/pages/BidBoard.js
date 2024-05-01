@@ -7,8 +7,7 @@ import { useLocation } from "react-router-dom";
 function BidBoard({ bids, fetchBids }) {
     const [totalBids, setTotalBids] = useState('');
     const [totalPerAcre, setTotalPerAcre] = useState('');
-    
-    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(localStorage.getItem('currentAuctionNumber'));
     const [currentAuction, setCurrentAuction] = useState({
         name: '',
         tractNum: 0

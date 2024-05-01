@@ -31,7 +31,7 @@ function App() {
                 {/* <header>
                   <GiHamburgerMenu onClick={() => setShowNav(!showNav)}/>
                 </header> */}
-                <Navbar fetchBids={fetchBids} />
+                <Navbar fetchBids={fetchBids}/>
 
                 <Routes>
                   <Route path="/bid-board" exact={true} element={<BidBoard bids={bids} fetchBids={fetchBids} />}/>
