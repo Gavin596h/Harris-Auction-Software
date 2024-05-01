@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react"
+import Moment from 'react-moment';
+
 
 // Create styles
   const Report = React.forwardRef((props, ref) => {
@@ -6,7 +8,8 @@ import React, { useState, useEffect } from "react"
     const [bids, setBids] = useState([]);
     const [currentAuction, setCurrentAuction] = useState({
       name: '',
-      tractNum: 0
+      tractNum: 0,
+      date: Date
     });
     const [totalBids, setTotalBids] = useState('');
     const [totalPerAcre, setTotalPerAcre] = useState('');
@@ -40,7 +43,8 @@ import React, { useState, useEffect } from "react"
         const data = await response.json();
         setCurrentAuction(({
           name: data.AuctionName,
-          tractNum: data.TractAcres
+          tractNum: data.TractAcres,
+          date: data.AuctionDate
       })); 
         } catch (error) {
         console.error('There was an error fetching the auction:', error);
@@ -75,6 +79,8 @@ useEffect(() => {
       <div className="p-20 font-fira dark:bg-gray-800 h-screen" ref={ref}>
       <div>
           <h2 className='text-black'>{currentAuction.name}</h2>
+          <Moment format="D MMM YYYY" withTitle>{currentAuction.date}</Moment>
+        <br></br>
           <label htmlFor="total">Total: </label>
           <input className=" p-2 m-2" type="string" id="total" name="total" value={totalBids.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}></input>
           <label htmlFor="PerAcreTotal">Per Acre: </label>

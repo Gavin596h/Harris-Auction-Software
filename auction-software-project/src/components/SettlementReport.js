@@ -1,7 +1,14 @@
 import React from "react"
 
 
-const SettlementReport = React.forwardRef((props, ref) => {
+const SettlementReport =  React.forwardRef((props, ref) => {
+
+
+    
+
+
+
+
     return(
         <div className="p-7 font-fira h-screen" ref={ref}>
         <h2 className='text-black'>Test Auction</h2>

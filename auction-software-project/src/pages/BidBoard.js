@@ -112,14 +112,14 @@ function BidBoard({ bids, fetchBids }) {
                             Settlement Report
                 </button> */}
 
-        {/* <button
+        <button
             className="p-2 bg-red-600 text-white m-2"
             type="button"
             onClick={() => setShowModal(true)}
         >
             Settlement Report
-        </button> */}
-      {/* {showModal ? (
+        </button>
+       {showModal ? (
         <>
           <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
@@ -133,19 +133,23 @@ function BidBoard({ bids, fetchBids }) {
                     </button>
                 )}
                 />
-                  <button
+            
+
+
+
+                </div>
+              </div>
+              <button
                     className="p-2 bg-red-600 text-white m-2"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
                     Close
                   </button>
-                </div>
-              </div>
             </div>
           </div>
         </>
-      ) : null} */}
+      ) : null}
 
 
 
@@ -179,13 +183,14 @@ function BidBoard({ bids, fetchBids }) {
                 </thead>
                 <tbody>
                     {bids.map((bid, index) => (
-                        <tr key={index} className="bg-black">
+                        <tr key={index} className={bid.High ? 'bg-gray-600' : 'bg-black'}>
                             <td className="border-gray-400 border-r-2 px-6">{bid.Bidder}</td>
                             <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
                             <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead ? bid.ToLead.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}) : "$0"}</td>
-                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre ? bid.PerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2}) : "$0"}</td>                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
+                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre ? bid.PerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2}) : "$0"}</td>                            
+                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
                             <td className="border-gray-400 px-6 py-4">
-                                {bid.Tract.map(t => <span key={t} className='p-2 m-2 text-white bg-gray-700'>{t}</span>)}
+                                {bid.Tract.map(t => <span key={t} className={bid.High ? 'bg-white text-black p-2 m-1' : 'bg-gray-700 p-2 m-1'}>{t}</span>)}
                             </td>
                         </tr>
                     ))}
