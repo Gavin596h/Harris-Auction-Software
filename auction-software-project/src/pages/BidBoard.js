@@ -9,6 +9,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import {RiAuctionFill} from 'react-icons/ri'
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdHome, MdOutlineDashboard } from "react-icons/md";
+import { Button, Modal } from "flowbite-react";
 
 
 function BidBoard({ bids, fetchBids }) {
@@ -22,6 +23,7 @@ function BidBoard({ bids, fetchBids }) {
 
     const refReport = useRef();
     const refSettlement = useRef();
+    const [showModal, setShowModal] = useState(false);
 
     const fetchAuction = async (a) => {
         try {
@@ -91,47 +93,71 @@ function BidBoard({ bids, fetchBids }) {
             <div className='h-full overflow-y-auto py-5 px-3 bg-gray-900'>         
             <ul className="pl-0 space-y-1">
                 <NewBid></NewBid>
-                    <li>
-                        <NavLink to="/home" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'>
-                            <MdHome />
-                            <span class="ml-3">Home</span> 
-                         </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/new-auction" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group'><RiAuctionFill /> 
-                            <span class="ml-3">New Auction</span> 
-                        </NavLink>
-                    </li>
-                    <li>
-                        <a href="/reports" className=' no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-                        <TbReportAnalytics/>
-                        <span class="ml-3">Reports</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/#" className='no-underline flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white dark:hover:bg-red-600 group w-200'>
-                        <FaRegCalendarAlt />
-                        <span class="ml-3">Calandar</span>
-                        </a>
-                    </li>
+
                     </ul>
             </div>
         </aside>
-          <div className="p-4 sm:ml-64 font-fira dark:bg-gray-800 h-screen">
+          <div className="p-4 sm:ml-64 font-fira bg-gray-800 h-screen">
             <div>
                 <h2 className='text-white'>{currentAuction.name}</h2>
                 <ReactToPrint
                 content={() => refReport.current}
                 trigger={() => (
-                    <button className='p-2 bg-red-600 text-white'>
+                    <button className='p-2 bg-red-700 text-white'>
                             Print Report
                     </button>
                 )}
                 />    
+                {/* <button className='p-2 bg-red-600 text-white m-2'>
+                            Settlement Report
+                </button> */}
+
+        {/* <button
+            className="p-2 bg-red-600 text-white m-2"
+            type="button"
+            onClick={() => setShowModal(true)}
+        >
+            Settlement Report
+        </button> */}
+      {/* {showModal ? (
+        <>
+          <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-200 outline-none focus:outline-none">
+                <div className="flex items-center justify-end p-6 border-t border-solid rounded-b">
                 <ReactToPrint
                 content={() => refSettlement.current}
                 trigger={() => (
                     <button className='p-2 bg-red-600 text-white m-2'>
+                            Settlement
+                    </button>
+                )}
+                />
+                  <button
+                    className="p-2 bg-red-600 text-white m-2"
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null} */}
+
+
+
+
+
+
+
+
+                <ReactToPrint
+                content={() => refSettlement.current}
+                trigger={() => (
+                    <button className='p-2 bg-red-700 text-white m-2'>
                             Settlement
                     </button>
                 )}
@@ -141,7 +167,7 @@ function BidBoard({ bids, fetchBids }) {
             </div>
         
             <table className="w-full text-sm text-white right-0 border-collapse">
-                <thead className="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-white">
+                <thead className="w-full text-xsuppercase bg-gray-900 text-white">
                     <tr>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bidder Number</th>
                         <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bid Amount</th>

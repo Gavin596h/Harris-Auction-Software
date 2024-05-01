@@ -3,6 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Report from './Report';
 import BidBoard from '../pages/BidBoard';
+import { NavLink, Link } from 'react-router-dom';
+
 
 function NewBid({ fetchBids, auctionNumber }) {
     const [bidderNumber, setBidderNumber] = useState('');
@@ -193,6 +195,10 @@ function NewBid({ fetchBids, auctionNumber }) {
 <div>
     <form onSubmit={handleSubmit} className='font-fire'>
         <div className="bg-gray-900 p-4">
+            <Link to="/home"> 
+                    <button class="bg-red-700 text-white w-full p-2 mb-2 mb-10">Save</button> 
+            </Link>
+            
             <label htmlFor="BidderNumber" className="text-white">Bid Number</label>
             <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
             <hr></hr>
@@ -211,7 +217,7 @@ function NewBid({ fetchBids, auctionNumber }) {
               ))
             }
             </ul>
-            <label htmlFor="BidType"> Bid Type </label>
+            <label htmlFor="BidType" className='text-white mt-5'> Bid Type </label>
             <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>
                 <option value="InTotal">In Total</option>
                 <option value="PerAcre">Per Acre</option>
@@ -219,6 +225,7 @@ function NewBid({ fetchBids, auctionNumber }) {
                 <button className="bg-red-700 text-white w-full p-2 mb-2"  type="submit" id="SubmitBid" name="SubmitBid" onClick={handleSubmit}>Add Bid</button>
                 <button  className="bg-gray-400 text-white w-full p-2 mb-2" type="button" id="ClearForm" name="ClearForm" onClick={clearForm}>Clear Form</button>
                 <button  className="bg-red-700 text-white w-full p-2 mb-2" type="button" id="DeleteBid" name="DeleteBid" onClick={handleDeleteRecentBid}>Delete Bid</button>
+
             </div>
             </form>
         </div>

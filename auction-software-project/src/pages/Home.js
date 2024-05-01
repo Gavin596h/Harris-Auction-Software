@@ -1,5 +1,6 @@
 import NewBid from '../components/NewBid';
 import React, { useState, useEffect } from 'react';
+import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
@@ -38,16 +39,17 @@ const Home = () => {
     
       }
 
+
     return    (
         <div className="p-4 sm:ml-64 font-fira">
             <ul className="p-0">
                 {pastAuctions.map(auction => 
                 <li key ={auction.AuctionNumber} className="bg-gray-200 p-4 w-full mb-3">
                     <div className="w-6/12">
-                        <h3>{auction.AuctionName}</h3>
-                        <p>Date: {auction.AuctionDate}</p>
-                        <p>Tracts: {auction.TractQuantity}</p>
-                        <p>{auction.AuctionNumber}</p>
+                        <h3 className='bg-gray underline'>{auction.AuctionName}</h3>
+                        <p><span className='font-bold	'>Date: </span><Moment format="D MMM YYYY" withTitle>{auction.AuctionDate}</Moment></p>
+                        <p><span className='font-bold	'>Tracts: </span>{auction.TractQuantity}</p>
+                        <p><span className='font-bold	'>Auction Number: </span>{auction.AuctionNumber}</p>
                     </div>
                     <div className="w-6/12">
                         <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
