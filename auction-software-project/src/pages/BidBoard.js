@@ -14,8 +14,7 @@ import { MdHome, MdOutlineDashboard } from "react-icons/md";
 function BidBoard({ bids, fetchBids }) {
     const [totalBids, setTotalBids] = useState('');
     const [totalPerAcre, setTotalPerAcre] = useState('');
-    
-    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(null);
+    const [currentAuctionNumber, setCurrentAuctionNumber] = useState(localStorage.getItem('currentAuctionNumber'));
     const [currentAuction, setCurrentAuction] = useState({
         name: '',
         tractNum: 0

@@ -56,6 +56,14 @@ function NewBid({ fetchBids, auctionNumber }) {
         console.log(currentAuction.tractNum);
     }, [currentAuctionNumber, currentAuction.tractNum], currentAuction.name);
 
+    useEffect(() => {
+        if (auctionNumber) {
+            // Do something when auctionNumber changes
+            console.log("Auction Number has changed to: ", auctionNumber);
+            fetchNewBids(auctionNumber);
+        }
+    }, [auctionNumber]);
+    
     const handleCheckboxChange = (tractNumber) => {
         setTracts(prev => {
             if (prev.includes(tractNumber)) {
