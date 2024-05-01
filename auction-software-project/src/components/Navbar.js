@@ -6,9 +6,12 @@ import { MdHome, MdOutlineDashboard } from "react-icons/md";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import NewBid from './NewBid';
+import { useState } from 'react';
 
 
-const Navbar = ({ fetchBids, auctionNumber }) => {
+const Navbar = () => {
+    const [isShow, setShow] = useState(false);
+
     return (
         <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
             <div className='h-full overflow-y-auto py-5 px-3 bg-red-700'>         
@@ -36,7 +39,6 @@ const Navbar = ({ fetchBids, auctionNumber }) => {
                         <span class="ml-3">Calandar</span>
                         </a>
                     </li>
-                    <NewBid fetchBids={fetchBids} auctionNumber={auctionNumber} />
                     </ul>
             </div>
         </aside>

@@ -6,6 +6,7 @@ const Home = () => {
 
 
     const [pastAuctions, setPastAuctions] = useState([]);
+    
 
 
     useEffect(() => {
