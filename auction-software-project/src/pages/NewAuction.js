@@ -147,6 +147,7 @@ function NewAuction() {
           draggable: true,
           progress: undefined,
         });
+        
     } catch (error) {
         console.error('Error:', error);
         toast.error('Failed to save the auction. Please try again.', {

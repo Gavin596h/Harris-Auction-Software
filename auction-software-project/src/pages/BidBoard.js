@@ -108,49 +108,6 @@ function BidBoard({ bids, fetchBids }) {
                     </button>
                 )}
                 />    
-                {/* <button className='p-2 bg-red-600 text-white m-2'>
-                            Settlement Report
-                </button> */}
-
-        <button
-            className="p-2 bg-red-600 text-white m-2"
-            type="button"
-            onClick={() => setShowModal(true)}
-        >
-            Settlement Report
-        </button>
-       {showModal ? (
-        <>
-          <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-200 outline-none focus:outline-none">
-                <div className="flex items-center justify-end p-6 border-t border-solid rounded-b">
-                <ReactToPrint
-                content={() => refSettlement.current}
-                trigger={() => (
-                    <button className='p-2 bg-red-600 text-white m-2'>
-                            Settlement
-                    </button>
-                )}
-                />
-            
-
-
-
-                </div>
-              </div>
-              <button
-                    className="p-2 bg-red-600 text-white m-2"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Close
-                  </button>
-            </div>
-          </div>
-        </>
-      ) : null}
-
 
 
 
