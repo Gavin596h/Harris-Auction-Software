@@ -200,10 +200,10 @@ function NewBid({ fetchBids, auctionNumber }) {
             </Link>
             
             <label htmlFor="BidderNumber" className="text-white">Bid Number</label>
-            <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
+            <input className="w-full p-2 bg-white" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
             <hr></hr>
             <labe  htmlFor="Tracts" className="text-white">Bid Amount</labe>
-            <input className="w-full p-2"type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} ></input>
+            <input className="w-full p-2 bg-white"type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} ></input>
             <hr></hr>
             <ul className="grid grid-cols-3 p-0 gap-3" >
             {             

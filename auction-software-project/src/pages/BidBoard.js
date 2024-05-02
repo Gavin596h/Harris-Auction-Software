@@ -9,7 +9,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import {RiAuctionFill} from 'react-icons/ri'
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdHome, MdOutlineDashboard } from "react-icons/md";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, ModalBody } from "flowbite-react";
 
 
 function BidBoard({ bids, fetchBids }) {
@@ -20,10 +20,12 @@ function BidBoard({ bids, fetchBids }) {
         name: '',
         tractNum: 0
     });
+    const [high, setHigh] = useState([]);
+    const [bidID, setID] = useState();
 
     const refReport = useRef();
     const refSettlement = useRef();
-    const [showModal, setShowModal] = useState(false);
+    const [openModal, setOpenModal] = useState(true);
 
     const fetchAuction = async (a) => {
         try {
@@ -82,6 +84,7 @@ function BidBoard({ bids, fetchBids }) {
         if (auctionNumber) {
             setCurrentAuctionNumber(auctionNumber);
             fetchBids(auctionNumber);
+            setHigh(bids.filter((b) => b.High === true));
             fetchAuction(auctionNumber);
         }
     }, [fetchBids]);
@@ -89,13 +92,48 @@ function BidBoard({ bids, fetchBids }) {
 
   return (
     <>
+    {/* <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                            <Modal.Header>Settlment Report</Modal.Header>
+                            <Modal.Body>
+                            <div>
+                            <table className="text-sm text-white right-0">
+                                <thead className="w-full text-xsuppercase bg-gray-900 text-white">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bidder Number</th>
+                                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Bid Amount</th>
+                                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">Per Acre</th>
+                                        <th scope="col" className="px-6 py-3 border-r-2 border-gray-400">High</th>
+                                        <th scope="col" className="px-6 py-3">Tract</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {high.map((bid, index) => (
+                                        <tr key={index} className={bid.High ? 'bg-gray-600' : 'bg-black'}>
+                                            <td className="border-gray-400 border-r-2 px-6">{bid.Bidder}</td>
+                                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+                                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre ? bid.PerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2}) : "$0"}</td>                            
+                                            <td className="border-gray-400 border-r-2 px-6 py-4">{bid.High ? 'Yes' : 'No'}</td>
+                                            <td className="border-gray-400 px-6 py-4">
+                                                {bid.Tract.map(t => <span key={t} className={bid.High ? 'bg-white text-black p-2 m-1' : 'bg-gray-700 p-2 m-1'}>{t}</span>)}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            </div>
+                            </Modal.Body>
+                            <Modal.Footer>                            
+                            <button className='p-2 bg-red-700 text-white m-2' onClick={() => setOpenModal(false)}>
+                                Settlement
+                             </button>          
+                            </Modal.Footer>
+                        </Modal> */}
         <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
             <div className='h-full overflow-y-auto py-5 px-3 bg-gray-900'>         
             <ul className="pl-0 space-y-1">
                 <NewBid></NewBid>
-
-                    </ul>
-            </div>
+            </ul>
+        </div>
         </aside>
           <div className="p-4 sm:ml-64 font-fira bg-gray-800 h-screen">
             <div>
@@ -109,24 +147,37 @@ function BidBoard({ bids, fetchBids }) {
                 )}
                 />    
 
+                    <details className="dropdown">
+                        <summary className="p-2 bg-red-700 text-white m-2">Settlement Report</summary>
+                        <ul className="p-2 shadow menu dropdown-content z-[1] bg-gray-100">
+                        {high.map((bid, index) => (
+                            <li>
+                            <tr key={index} className='w-full'>
+                                <td className="border-gray-400 border-r-2 px-6">
+                                    <ReactToPrint
+                                        content={() => refSettlement.current}
+                                        trigger={() => (
+                                            <button className='p-2 bg-red-700 text-white m-2' onClick={() => setID("testing")}>
+                                                    Print
+                                            </button>
+                                        )}
+                                        />  
+                                    </td>
+                                <td className="border-gray-400 border-r-2 px-6">{bid.Bidder}</td>
+                                <td className="border-gray-400 border-r-2 px-6 py-4">{bid.BidAmount.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+                                <td className="border-gray-400 border-r-2 px-6 py-4">{bid.ToLead ? bid.ToLead.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}) : "$0"}</td>
+                                <td className="border-gray-400 border-r-2 px-6 py-4">{bid.PerAcre ? bid.PerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2}) : "$0"}</td>                            
+                                <td className="border-gray-400 px-6 py-4">
+                                    {bid.Tract.map(t => <span key={t} className={bid.High ? 'bg-white text-black p-2 m-1' : 'bg-gray-700 p-2 m-1'}>{t}</span>)}
+                                </td>
+                            </tr>
+                            </li>
+                        ))}
+                        </ul>
+                    </details>
 
-
-
-
-
-
-                <ReactToPrint
-                content={() => refSettlement.current}
-                trigger={() => (
-                    <button className='p-2 bg-red-700 text-white m-2'>
-                            Settlement
-                    </button>
-                )}
-                />
                 <p className='inline-block'><span className="text-white p-2 m-2 bg-gray-600">Total:  {totalBids.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span><span  className="text-white p-2 bg-gray-600">Per Acre:  {totalPerAcre.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
-            
             </div>
-        
             <table className="w-full text-sm text-white right-0 border-collapse">
                 <thead className="w-full text-xsuppercase bg-gray-900 text-white">
                     <tr>
@@ -158,10 +209,11 @@ function BidBoard({ bids, fetchBids }) {
                 <Report ref={refReport}></Report>
             </div>
             <div style={{display: "none"}}>
-                <SettlementReport ref={refSettlement}></SettlementReport>
+                <SettlementReport ref={refSettlement} props={bidID}></SettlementReport>
             </div>
           
             </div>
+            
         </ >
   );
 }
