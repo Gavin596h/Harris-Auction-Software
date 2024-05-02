@@ -12,6 +12,8 @@ const BidBoardSchema = new mongoose.Schema({
   AcreCount: Number,
   High: Boolean,
   Tract: [Number],
+  BidType: String,
+  Disabled: { type: Boolean, default: false }  // New field to handle disabling bids
 });
 
 const BidBoard = mongoose.model('BidBoard', BidBoardSchema);

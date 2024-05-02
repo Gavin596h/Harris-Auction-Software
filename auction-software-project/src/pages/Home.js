@@ -1,73 +1,68 @@
 import NewBid from '../components/NewBid';
-
+import React, { useState, useEffect } from 'react';
+import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
+
+
+    const [pastAuctions, setPastAuctions] = useState([]);
+    
+
+
+    useEffect(() => {
+        const fetchPastAuctions = async () => {
+          try {
+            const response = await fetch('http://localhost:3001/pastAuctions');
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const auctions = await response.json();
+            setPastAuctions(auctions);
+          } catch (error) {
+            console.error('Failed to fetch past auctions:', error);
+          }
+        };
+        fetchPastAuctions();
+      }, []);
+
+      const setAuctionNum = (a) => {
+        
+
+        window.localStorage.setItem('currentAuctionNumber', a.AuctionNumber);
+        window.dispatchEvent(new Event("storage"));
+
+        console.log(a)
+        localStorage.setItem('selectedAuction', a.AuctionName);
+        localStorage.setItem('tractNum', a.TractQuantity)
+        console.log(a.TractQuantity);
+    
+      }
+
+
     return    (
         <div className="p-4 sm:ml-64 font-fira">
-            <h2>Upcoming</h2>
-            <label>Sort:</label>
-            <select className="bg-gray-200 p-2 m-2">
-                <option>Date - Oldest First</option>
-                <option>Date - Newest First</option>
-                <option>A-Z</option>
-            </select>
-            <br></br>
             <ul className="p-0">
-                <li className="bg-gray-200 p-4 w-full">
+                {pastAuctions.map(auction => 
+                <li key ={auction.AuctionNumber} className="bg-gray-200 p-4 w-full mb-3">
                     <div className="w-6/12">
-                        <h3>Business Building</h3>
-                        <p>Tracts: 2</p>
-                        <p>Date: April 1st, 2024</p>
+                        <h3 className='bg-gray underline'>{auction.AuctionName}</h3>
+                        <p><span className='font-bold	'>Date: </span><Moment format="D MMM YYYY" withTitle>{auction.AuctionDate}</Moment></p>
+                        <p><span className='font-bold	'>Tracts: </span>{auction.TractQuantity}</p>
+                        <p><span className='font-bold	'>Auction Number: </span>{auction.AuctionNumber}</p>
                     </div>
                     <div className="w-6/12">
                         <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
                         <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Start</button>
+                        <Link to={{
+                          pathname: "/bid-board",
+                          state: { selectedAuction: auction }  // Ensure this matches the object key used in BidBoard.js
+                        }}>
+                          <button className="m-2 p-3 bg-red-700 text-white" onClick={setAuctionNum.bind(this, auction)}>Start</button>
+                        </Link>
                     </div>
                 </li>
-            </ul>
-            <hr></hr>
-            <h2>Past Auctions</h2>
-            <label>Sort:</label>
-            <select className="bg-gray-200 p-2 m-2">
-                <option>Date - Oldest First</option>
-                <option>Date - Newest First</option>
-                <option>A-Z</option>
-            </select>
-            <label>Filter:</label>
-            <select className="bg-gray-200 p-2 m-2">
-                <option>Date - Oldest First</option>
-                <option>Date - Newest First</option>
-                <option>A-Z</option>
-            </select>
-            <br></br>
-            <ul className="p-0">
-                <li className="bg-gray-200 p-4 w-full">
-                    <div className="w-6/12">
-                        <h3>Business Building</h3>
-                        <p>Tracts: 2</p>
-                        <p>Date: April 1st, 2024</p>
-                    </div>
-                    <div className="w-6/12">
-                        <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Start</button>
-                    </div>
-                </li>
-            </ul>
-            <ul className="p-0">
-                <li className="bg-gray-200 p-4 w-full">
-                    <div className="w-6/12">
-                        <h3>Business Building</h3>
-                        <p>Tracts: 2</p>
-                        <p>Date: April 1st, 2024</p>
-                    </div>
-                    <div className="w-6/12">
-                        <button className="m-2 p-3 bg-red-700 text-white">Remove</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Edit</button>
-                        <button className="m-2 p-3 bg-red-700 text-white">Start</button>
-                    </div>
-                </li>
+                )}
             </ul>
     </div>
 

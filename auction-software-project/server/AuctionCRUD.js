@@ -51,4 +51,19 @@ router.get('/getAuction/:id', async (req, res) => {
   }
 });
 
+router.get('/getAuctionByNumber/:auctionNumber', async (req, res) => {
+  try {
+    const auction = await Auction.findOne({ AuctionNumber: req.params.auctionNumber });
+    if (auction) {
+      res.json(auction);
+    } else {
+      console.log('No auction found with that number');
+      res.status(404).json({ message: 'No auction found with that number' });
+    }
+  } catch (error) {
+    console.error('Error fetching auction:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports=router;

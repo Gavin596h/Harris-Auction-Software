@@ -1,5 +1,7 @@
 import '../style/NewAuction.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 import { useState,useEffect } from "react";
@@ -106,42 +108,59 @@ function NewAuction() {
     }
   };
   
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event, action) => {
     event.preventDefault();
 
     const updatedFormData = {
-      ...formData,
-      TractAcres: tractAcres,
-      AuctionNumber: formData.AuctionNumber,
-      TractQuantity: parseInt(formData.TractQuantity, 10),
-      BuyersPremPercent: parseFloat(formData.BuyersPremPercent),
-      PercentOrAmount: parseFloat(formData.PercentOrAmount),
+        ...formData,
+        TractAcres: tractAcres,
+        AuctionNumber: formData.AuctionNumber,
+        TractQuantity: parseInt(formData.TractQuantity, 10),
+        BuyersPremPercent: parseFloat(formData.BuyersPremPercent),
+        PercentOrAmount: parseFloat(formData.PercentOrAmount),
     };
 
-    console.log('Auction submitted successfully');
-    localStorage.setItem('currentAuctionNumber', updatedFormData.AuctionNumber);
-
     try {
-      const response = await fetch('http://localhost:3001/AuctionCRUD', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedFormData),
-      });
-  
-      if (!response.ok) throw new Error('Submission failed');
-      console.log('Auction submitted successfully');
-  
-      // Save to localStorage if needed
-      localStorage.setItem('currentAuctionNumber', updatedFormData.AuctionNumber);
-  
-      // Navigate to BidBoard
-      navigate("/bid-board");
+        const response = await fetch('http://localhost:3001/AuctionCRUD', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFormData),
+        });
+
+        if (!response.ok) throw new Error('Submission failed');
+
+        const responseData = await response.json();
+        console.log('Auction submitted successfully', responseData);
+
+        localStorage.setItem('currentAuctionNumber', updatedFormData.AuctionNumber.toString());
+
+        handleResetDefaults();
+
+        toast.success('The auction has been saved. Go to the home page for a list of auctions and to start one.', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        
     } catch (error) {
-      console.error('Error:', error);
+        console.error('Error:', error);
+        toast.error('Failed to save the auction. Please try again.', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
-  };
+};
 
     const handlePastAuctionSelect = async (event) => {
       const auctionId = event.target.value;
@@ -176,7 +195,7 @@ function NewAuction() {
     };
 
     return <div className="NewAuction">
-
+<ToastContainer />
  <body>
     <div class="font-fira w-full flex justify-center mt-10">
         <form>
@@ -299,18 +318,18 @@ function NewAuction() {
 {/* Terms */}
         <legend>Terms</legend>
         <div class="flex flex-wrap -mx-3">
-            <div class=" md:w-1/6 px-3 mb-6 md:mb-0">
+            <div class="w-1/6 mb-6 md:mb-0">
                 <input type="checkbox" id="BuyersPrem" name="BuyersPrem" checked={formData.BuyersPrem} onChange={handleChange} class=" w-4 h-4 dark:bg-gray-700 dark:border-gray-600"></input>
                 <label class="ms-2" for="BuyersPrem">Buyer's Premium</label>
             </div>
-            <div class="flex w-1/6 px-3 mb-6 md:mb-0">
+            <div class="w-3/6 mb-6 md:mb-0">
               <div class="w-3/6">
                 <label class="block tracking-wide mb-2"  for="BuyersPremPercent">B.P. Percent</label>
-                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" value={formData.BuyersPremPercent} onChange={handleChange} class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
+                <input type="number" id="BuyersPremPercent" name="BuyersPremPercent" value={formData.BuyersPremPercent} onChange={handleChange} class="block py-2 px-4 mb-3 bg-gray-200 rounded"></input>
               </div>
-              <div class="w-3/6 ml-5">
-                  <label for="DepositType" class="block tracking-wide mb-2  ml-5" >Deposit Type</label>
-                      <select id="DepositType" name="DepositType" value={formData.DepositType} onChange={handleChange} class="block py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
+              <div class="w-3/6">
+                  <label for="DepositType" class="block tracking-wide mb-2" >Deposit Type</label>
+                      <select id="DepositType" name="DepositType" value={formData.DepositType} onChange={handleChange} class="block w-full py-2 px-4 mb-3 leading-tight bg-gray-200 rounded">
                           <option value="Amount" >Amount</option>
                           <option value="Percent" >Percent</option>
                           <option value="None" >None</option>
@@ -320,7 +339,7 @@ function NewAuction() {
               </div>
             <div>
                 <label class="block tracking-wide mb-2"  for="PercentOrAmount">Deposit Percent Or Amount</label>
-                <input type="number" id="PercentOrAmount" name="PercentOrAmount" value={formData.PercentOrAmount} onChange={handleChange} class="block w-1/2 py-2 px-4 mb-3 leading-tight bg-gray-200 rounded"></input>
+                <input type="number" id="PercentOrAmount" name="PercentOrAmount" value={formData.PercentOrAmount} onChange={handleChange} class="block py-2 px-4 mb-3 bg-gray-200 rounded"></input>
             </div>
           </div>
           <hr/>
@@ -365,10 +384,9 @@ function NewAuction() {
            
             <hr/>
             <div class="justify-center flex flex-wrap mb-6 md:mb-0 text-white">
-                <input type="button" id="Create" name="Create" value="Start Auction" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer text-white"></input>
-                <input type="button" id="Save" name="Save" value="Save" onClick={handleSubmit} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
-              </div>
-            </form>
+                <input type="button" id="Save" name="Save" value="Save" onClick={(e) => handleSubmit(e)} class="mr-5 block py-2 px-4 mb-3 leading-tight bg-gray-500 rounded dark:hover:bg-red-600 cursor-pointer"></input>
+            </div>
+          </form>
         </div>
     </body>
     </div>
