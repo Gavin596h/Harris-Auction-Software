@@ -201,13 +201,6 @@ function NewBid({ fetchBids, auctionNumber }) {
             
             <label htmlFor="BidderNumber" className="text-white">Bid Number</label>
             <input className="w-full p-2" type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)}></input>
-
-return (
-        <>
-    <aside className='font-fira fixed top-0 left-0 z-40 w-64 h-screen'>
-        <div className="bg-gray-800 p-4">
-            <label className="text-white">Bid amount</label>
-            <input className="w-full p-2"></input>
             <hr></hr>
             <labe  htmlFor="Tracts" className="text-white">Bid Amount</labe>
             <input className="w-full p-2"type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} ></input>
@@ -226,22 +219,6 @@ return (
             </ul>
             <label htmlFor="BidType" className='text-white mt-5'> Bid Type </label>
             <select id="BidType" name="BidType" className="bg-gray-400 text-white w-full p-2 mb-2" value={bidType} onChange={e => setBidType(e.target.value)}>
-            <button className="bg-red-700 text-white w-full p-2">Add Bid</button>
-            </div>
-        </aside>
-      
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="BidderNumber"> Bidder Number </label>
-            <input type="number" id="BidderNumber" name="BidderNumber" value={bidderNumber} onChange={e => setBidderNumber(e.target.value)} />
-
-            <label htmlFor="Tracts"> Tracts Being Bid On </label>
-            <input type="text" id="Tracts" name="Tracts" value={tracts} onChange={e => setTracts(e.target.value)} />
-
-            <label htmlFor="BidAmount"> Bid Amount </label>
-            <input type="number" id="BidAmount" name="BidAmount" value={bidAmount} onChange={e => setBidAmount(e.target.value)} />
-
-            <label htmlFor="BidType"> Bid Type </label>
-            <select id="BidType" name="BidType" value={bidType} onChange={e => setBidType(e.target.value)}>
                 <option value="InTotal">In Total</option>
                 <option value="PerAcre">Per Acre</option>
             </select>
@@ -252,11 +229,6 @@ return (
             </div>
             </form>
         </div>
-
-            <button type="submit" id="SubmitBid" name="SubmitBid"> Submit Bid </button>
-            <button type="button" id="ClearForm" name="ClearForm" onClick={clearForm}> Clear Form </button>
-            <button type="button" id="DeleteRecent" name="DeleteRecent" onClick={handleDeleteRecentBid}> Delete </button>
-        </form>
         </>
     );
 }
